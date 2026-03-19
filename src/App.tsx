@@ -1,33 +1,24 @@
 
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Navbar } from './components/Navbar';
-import { HeroSection } from './components/HeroSection';
-import { ProblemSection } from './components/ProblemSection';
-import { SolutionSection } from './components/SolutionSection';
-import { HowItWorksSection } from './components/HowItWorksSection';
-import { FeaturesSection } from './components/FeaturesSection';
-import { DashboardPreview } from './components/DashboardPreview';
-import { ComparisonTable } from './components/ComparisonTable';
-import { ImpactStats } from './components/ImpactStats';
-import { FinalCTA } from './components/FinalCTA';
 import { Footer } from './components/Footer';
+import { Home } from './pages/Home';
+import { AboutUs } from './pages/AboutUs';
 
 function App() {
   return (
-    <div className="min-h-screen">
-      <Navbar />
-      <main>
-        <HeroSection />
-        <ProblemSection />
-        <SolutionSection />
-        <HowItWorksSection />
-        <FeaturesSection />
-        <DashboardPreview />
-        <ComparisonTable />
-        <ImpactStats />
-        <FinalCTA />
-      </main>
-      <Footer />
-    </div>
+    <Router>
+      <div className="min-h-screen">
+        <Navbar />
+        <main>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/about" element={<AboutUs />} />
+          </Routes>
+        </main>
+        <Footer />
+      </div>
+    </Router>
   );
 }
 

@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Saarthii | Next-Gen GovTech Solutions</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#ec5b13",
+                        "background-light": "#f8f6f6",
+                        "background-dark": "#221610",
+                    },
+                    fontFamily: {
+                        "display": ["Public Sans", "sans-serif"]
+                    },
+                    borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" },
+                },
+            },
+        }
+    </script>
+<style>
+        body { font-family: 'Public Sans', sans-serif; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24 }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 font-display transition-colors duration-300">
+<!-- Top Navigation -->
+<nav class="sticky top-0 z-50 w-full border-b border-slate-200 dark:border-slate-800 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="flex justify-between h-16 items-center">
+<div class="flex items-center gap-2">
+<div class="bg-primary p-1.5 rounded-lg text-white">
+<span class="material-symbols-outlined text-2xl block">account_balance</span>
+</div>
+<span class="text-xl font-bold tracking-tight text-slate-900 dark:text-white">Saarthii</span>
+</div>
+<div class="hidden md:flex items-center gap-8">
+<a class="text-sm font-medium hover:text-primary transition-colors" href="#problem">Problem</a>
+<a class="text-sm font-medium hover:text-primary transition-colors" href="#solution">Solution</a>
+<a class="text-sm font-medium hover:text-primary transition-colors" href="#features">Features</a>
+<a class="text-sm font-medium hover:text-primary transition-colors" href="#impact">Impact</a>
+</div>
+<div class="flex items-center gap-3">
+<button class="text-sm font-semibold px-4 py-2 hover:text-primary transition-colors">Login</button>
+<button class="bg-primary text-white text-sm font-bold px-5 py-2.5 rounded-xl hover:opacity-90 transition-all shadow-lg shadow-primary/20">
+                        Request Demo
+                    </button>
+</div>
+</div>
+</div>
+</nav>
+<!-- Hero Section -->
+<section class="relative pt-20 pb-16 lg:pt-32 lg:pb-24 overflow-hidden">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="text-center max-w-4xl mx-auto mb-16">
+<span class="inline-block px-4 py-1.5 mb-6 text-xs font-bold tracking-widest uppercase bg-primary/10 text-primary rounded-full">
+                    Future of Governance
+                </span>
+<h1 class="text-5xl lg:text-7xl font-black text-slate-900 dark:text-white leading-[1.1] mb-8">
+                    Empowering Governance with <span class="text-primary">AI-Driven</span> Insights
+                </h1>
+<p class="text-lg lg:text-xl text-slate-600 dark:text-slate-400 mb-10 leading-relaxed max-w-2xl mx-auto">
+                    Saarthii provides high-end GovTech solutions to streamline administrative workflows and enhance public service delivery with precision and scale.
+                </p>
+<div class="flex flex-col sm:flex-row gap-4 justify-center">
+<button class="bg-primary text-white px-8 py-4 rounded-xl font-bold text-lg hover:shadow-xl hover:shadow-primary/30 transition-all">Start Your Transformation</button>
+<button class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-8 py-4 rounded-xl font-bold text-lg hover:bg-slate-50 dark:hover:bg-slate-700 transition-all">View Case Studies</button>
+</div>
+</div>
+<!-- Hero Dashboard Mockup -->
+<div class="relative mx-auto max-w-5xl">
+<div class="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-2xl overflow-hidden p-2">
+<div class="bg-slate-100 dark:bg-slate-800 rounded-xl aspect-[16/9] relative overflow-hidden">
+<div class="absolute inset-0 bg-gradient-to-br from-slate-50 to-slate-200 dark:from-slate-800 dark:to-slate-900 flex flex-col p-6">
+<!-- Dashboard UI Placeholder -->
+<div class="flex gap-4 mb-6">
+<div class="h-8 w-32 bg-slate-300 dark:bg-slate-700 rounded-lg animate-pulse"></div>
+<div class="h-8 w-32 bg-slate-300 dark:bg-slate-700 rounded-lg animate-pulse"></div>
+</div>
+<div class="grid grid-cols-3 gap-6 mb-6">
+<div class="h-32 bg-white dark:bg-slate-700 rounded-xl shadow-sm"></div>
+<div class="h-32 bg-white dark:bg-slate-700 rounded-xl shadow-sm"></div>
+<div class="h-32 bg-white dark:bg-slate-700 rounded-xl shadow-sm"></div>
+</div>
+<div class="flex-grow bg-white dark:bg-slate-700 rounded-xl shadow-sm"></div>
+</div>
+<img class="absolute inset-0 w-full h-full object-cover opacity-20" data-alt="Data visualization dashboard showing government analytics" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA412VEOaUEiH4W4tXNzbBvJ54L_jHE3Pk-DGIxbryLXKPk8ZKRxOZ8oQodw3NZ4vqt_p0bms6uIqt1t2GFu3Zu1f2bjHAwb259zv0-tJpCMP0R42rDfNI2wmzCZ9mFZ8pkDMGXibIMgaQz4H3gEA24x9-TZXyOMzUNYJ6LjaFCOhuMMUw4DsjuS9E4QnFpJrP4y10TfF0H13EW-NCbAicxEXVKHEGdBWygdSy-RzQSwbKMSnOsCDj574HahBDOhIwXN4y_CiMAIxY"/>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Problem Section -->
+<section class="py-24 bg-slate-50 dark:bg-slate-900/50" id="problem">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="text-center mb-16">
+<h2 class="text-3xl lg:text-4xl font-bold text-slate-900 dark:text-white mb-4">The Challenges in Modern Governance</h2>
+<p class="text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">Traditional administrative systems face mounting pressure in an increasingly digital world.</p>
+</div>
+<div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+<div class="bg-white dark:bg-slate-800 p-8 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 hover:border-primary/50 transition-all">
+<span class="material-symbols-outlined text-primary text-4xl mb-4">database</span>
+<h3 class="text-xl font-bold mb-3">Data Silos</h3>
+<p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">Fragmented information across departments hinders holistic decision making and response times.</p>
+</div>
+<div class="bg-white dark:bg-slate-800 p-8 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 hover:border-primary/50 transition-all">
+<span class="material-symbols-outlined text-primary text-4xl mb-4">history_edu</span>
+<h3 class="text-xl font-bold mb-3">Manual Processing</h3>
+<p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">Legacy paperwork and manual workflows delay essential public services and increase error rates.</p>
+</div>
+<div class="bg-white dark:bg-slate-800 p-8 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 hover:border-primary/50 transition-all">
+<span class="material-symbols-outlined text-primary text-4xl mb-4">visibility_off</span>
+<h3 class="text-xl font-bold mb-3">Lack of Transparency</h3>
+<p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">Difficulty in tracking real-time progress of government schemes creates public distrust.</p>
+</div>
+<div class="bg-white dark:bg-slate-800 p-8 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 hover:border-primary/50 transition-all">
+<span class="material-symbols-outlined text-primary text-4xl mb-4">account_balance_wallet</span>
+<h3 class="text-xl font-bold mb-3">Resource Constraints</h3>
+<p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">Inefficient allocation of limited budgets prevents maximum community impact and growth.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Solution Pipeline Section -->
+<section class="py-24" id="solution">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="flex flex-col lg:flex-row items-center gap-16">
+<div class="lg:w-1/2">
+<h2 class="text-3xl lg:text-4xl font-bold mb-6">The Saarthii Solution Pipeline</h2>
+<p class="text-lg text-slate-600 dark:text-slate-400 mb-10">We transform administrative chaos into streamlined digital intelligence through our unique 2-phase approach.</p>
+<div class="space-y-8">
+<div class="flex gap-6">
+<div class="flex-shrink-0 w-12 h-12 rounded-full bg-primary text-white flex items-center justify-center font-bold text-xl shadow-lg shadow-primary/30">1</div>
+<div>
+<h4 class="text-xl font-bold mb-2">Phase I: Consolidation</h4>
+<p class="text-slate-600 dark:text-slate-400">Aggregating disparate data sources into a unified, secure cloud infrastructure with real-time syncing across all ministries.</p>
+</div>
+</div>
+<div class="flex gap-6">
+<div class="flex-shrink-0 w-12 h-12 rounded-full bg-primary text-white flex items-center justify-center font-bold text-xl shadow-lg shadow-primary/30">2</div>
+<div>
+<h4 class="text-xl font-bold mb-2">Phase II: Intelligence Activation</h4>
+<p class="text-slate-600 dark:text-slate-400">Deploying proprietary AI models to predict resource needs, automate citizen requests, and provide executive decision support.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="lg:w-1/2 w-full">
+<div class="relative bg-slate-900 rounded-3xl p-8 aspect-square flex items-center justify-center overflow-hidden">
+<div class="absolute inset-0 opacity-30">
+<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[150%] h-[150%] bg-[radial-gradient(circle,rgba(236,91,19,0.2)_0%,transparent_70%)]"></div>
+</div>
+<div class="relative z-10 grid grid-cols-2 gap-4 w-full h-full">
+<div class="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-6 flex flex-col justify-end">
+<span class="material-symbols-outlined text-primary mb-2">hub</span>
+<div class="text-xs uppercase tracking-widest text-slate-400">Connected</div>
+</div>
+<div class="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-6 flex flex-col justify-end">
+<span class="material-symbols-outlined text-primary mb-2">auto_awesome</span>
+<div class="text-xs uppercase tracking-widest text-slate-400">Automated</div>
+</div>
+<div class="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-6 flex flex-col justify-end">
+<span class="material-symbols-outlined text-primary mb-2">monitoring</span>
+<div class="text-xs uppercase tracking-widest text-slate-400">Insights</div>
+</div>
+<div class="bg-white/10 backdrop-blur-sm border border-primary/30 rounded-2xl p-6 flex flex-col justify-end">
+<span class="material-symbols-outlined text-white mb-2">verified</span>
+<div class="text-xs uppercase tracking-widest text-white font-bold">Verified</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- How It Works -->
+<section class="py-24 bg-slate-900 text-white overflow-hidden">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="text-center mb-20">
+<h2 class="text-3xl lg:text-4xl font-bold mb-4">Seamless Implementation</h2>
+<p class="text-slate-400">Going from legacy to lightning-fast in four simple steps.</p>
+</div>
+<div class="relative">
+<div class="hidden lg:block absolute top-12 left-0 w-full h-0.5 bg-slate-800"></div>
+<div class="grid lg:grid-cols-4 gap-12 relative">
+<div class="text-center group">
+<div class="w-24 h-24 bg-slate-800 rounded-2xl flex items-center justify-center mx-auto mb-6 border border-slate-700 group-hover:border-primary transition-all relative z-10">
+<span class="material-symbols-outlined text-3xl text-primary">analytics</span>
+</div>
+<h4 class="text-xl font-bold mb-3">Audit</h4>
+<p class="text-slate-400 text-sm">We analyze your current data structures and pain points.</p>
+</div>
+<div class="text-center group">
+<div class="w-24 h-24 bg-slate-800 rounded-2xl flex items-center justify-center mx-auto mb-6 border border-slate-700 group-hover:border-primary transition-all relative z-10">
+<span class="material-symbols-outlined text-3xl text-primary">cloud_sync</span>
+</div>
+<h4 class="text-xl font-bold mb-3">Integrate</h4>
+<p class="text-slate-400 text-sm">Our API layer connects all existing departmental databases.</p>
+</div>
+<div class="text-center group">
+<div class="w-24 h-24 bg-slate-800 rounded-2xl flex items-center justify-center mx-auto mb-6 border border-slate-700 group-hover:border-primary transition-all relative z-10">
+<span class="material-symbols-outlined text-3xl text-primary">psychology</span>
+</div>
+<h4 class="text-xl font-bold mb-3">Train</h4>
+<p class="text-slate-400 text-sm">Custom AI models are trained on your specific regional data.</p>
+</div>
+<div class="text-center group">
+<div class="w-24 h-24 bg-slate-800 rounded-2xl flex items-center justify-center mx-auto mb-6 border border-slate-700 group-hover:border-primary transition-all relative z-10">
+<span class="material-symbols-outlined text-3xl text-primary">rocket_launch</span>
+</div>
+<h4 class="text-xl font-bold mb-3">Deploy</h4>
+<p class="text-slate-400 text-sm">Full system rollout with role-based dashboard access.</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Features Grid -->
+<section class="py-24" id="features">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="text-center mb-16">
+<h2 class="text-3xl lg:text-4xl font-bold mb-4">Core Platform Capabilities</h2>
+<p class="text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">Built for the demands of modern public administration.</p>
+</div>
+<div class="grid md:grid-cols-3 gap-8">
+<div class="p-8 rounded-3xl bg-slate-50 dark:bg-slate-800/50 hover:bg-white dark:hover:bg-slate-800 transition-all border border-transparent hover:border-slate-200 dark:hover:border-slate-700 hover:shadow-xl group">
+<div class="w-12 h-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined">security</span>
+</div>
+<h3 class="text-xl font-bold mb-3">Military-Grade Security</h3>
+<p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">End-to-end encryption and multi-factor authentication for all government records and sensitive citizen data.</p>
+</div>
+<div class="p-8 rounded-3xl bg-slate-50 dark:bg-slate-800/50 hover:bg-white dark:hover:bg-slate-800 transition-all border border-transparent hover:border-slate-200 dark:hover:border-slate-700 hover:shadow-xl group">
+<div class="w-12 h-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined">query_stats</span>
+</div>
+<h3 class="text-xl font-bold mb-3">Predictive Analytics</h3>
+<p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">Anticipate public needs and potential crises before they occur using historical trend analysis and live data feeds.</p>
+</div>
+<div class="p-8 rounded-3xl bg-slate-50 dark:bg-slate-800/50 hover:bg-white dark:hover:bg-slate-800 transition-all border border-transparent hover:border-slate-200 dark:hover:border-slate-700 hover:shadow-xl group">
+<div class="w-12 h-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined">chat_bubble</span>
+</div>
+<h3 class="text-xl font-bold mb-3">Public Engagement</h3>
+<p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">Integrated multi-channel feedback systems to gather and process citizen sentiment in real-time across social and direct channels.</p>
+</div>
+<div class="p-8 rounded-3xl bg-slate-50 dark:bg-slate-800/50 hover:bg-white dark:hover:bg-slate-800 transition-all border border-transparent hover:border-slate-200 dark:hover:border-slate-700 hover:shadow-xl group">
+<div class="w-12 h-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined">translate</span>
+</div>
+<h3 class="text-xl font-bold mb-3">Multi-Lingual Support</h3>
+<p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">Native support for dozens of local languages and dialects ensures no citizen is left behind by technology barriers.</p>
+</div>
+<div class="p-8 rounded-3xl bg-slate-50 dark:bg-slate-800/50 hover:bg-white dark:hover:bg-slate-800 transition-all border border-transparent hover:border-slate-200 dark:hover:border-slate-700 hover:shadow-xl group">
+<div class="w-12 h-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined">api</span>
+</div>
+<h3 class="text-xl font-bold mb-3">Open API Framework</h3>
+<p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">Easily connect with existing legacy software or third-party civic-tech tools to expand platform capabilities without friction.</p>
+</div>
+<div class="p-8 rounded-3xl bg-slate-50 dark:bg-slate-800/50 hover:bg-white dark:hover:bg-slate-800 transition-all border border-transparent hover:border-slate-200 dark:hover:border-slate-700 hover:shadow-xl group">
+<div class="w-12 h-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined">verified_user</span>
+</div>
+<h3 class="text-xl font-bold mb-3">Compliance Engine</h3>
+<p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">Automatically stay updated with changing regional regulations and legislative changes with our built-in compliance monitor.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Dashboard Preview -->
+<section class="py-24 bg-slate-50 dark:bg-slate-900/50">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="grid lg:grid-cols-2 gap-12 items-center">
+<div class="order-2 lg:order-1">
+<div class="relative rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 overflow-hidden">
+<div class="p-6">
+<div class="flex items-center gap-2 mb-8">
+<div class="w-3 h-3 rounded-full bg-red-400"></div>
+<div class="w-3 h-3 rounded-full bg-amber-400"></div>
+<div class="w-3 h-3 rounded-full bg-emerald-400"></div>
+</div>
+<div class="space-y-4">
+<div class="h-4 w-1/2 bg-slate-100 dark:bg-slate-700 rounded"></div>
+<div class="grid grid-cols-4 gap-4">
+<div class="h-20 bg-primary/5 rounded-xl border border-primary/10"></div>
+<div class="h-20 bg-slate-50 dark:bg-slate-700 rounded-xl"></div>
+<div class="h-20 bg-slate-50 dark:bg-slate-700 rounded-xl"></div>
+<div class="h-20 bg-slate-50 dark:bg-slate-700 rounded-xl"></div>
+</div>
+<div class="h-40 bg-slate-50 dark:bg-slate-700 rounded-xl p-4">
+<div class="h-full flex items-end gap-2">
+<div class="flex-grow bg-primary/20 h-1/2 rounded-t"></div>
+<div class="flex-grow bg-primary/40 h-3/4 rounded-t"></div>
+<div class="flex-grow bg-primary h-full rounded-t"></div>
+<div class="flex-grow bg-primary/60 h-2/3 rounded-t"></div>
+</div>
+</div>
+</div>
+</div>
+<img class="absolute inset-0 w-full h-full object-cover opacity-10 pointer-events-none" data-alt="Government dashboard showing real-time service metrics" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCNOLZBmG2M2VLRPcqWlc-0X6vfrSdcM2DSlDNxOqWbsnj7d4bwKvFLH7D9oEJ85f68oc2ppxx1R7kndoFVW-orG-PhhTyalwxAuR_cZK8Sm2ZGAWI-ewwi0biCJ-tG4iwH6J_tz-Gn5wSOsjCUAfiEBqeQZEQFXaDlYuqyYz6-1v8FPqhwwOi0Xj2NygEV4IoUyCde_y2qWvMpB72AEygQqsB-zvoeSwSThny16XyqFF0iQmSUHAyERSLNtH5d3eDeQQ0y_LmCyhA"/>
+</div>
+</div>
+<div class="order-1 lg:order-2">
+<span class="text-primary font-bold tracking-widest uppercase text-sm mb-4 block">Double Visibility</span>
+<h2 class="text-4xl font-bold mb-6">Admin Power, Public Trust</h2>
+<div class="space-y-8">
+<div>
+<h4 class="text-xl font-bold mb-2 flex items-center gap-3">
+<span class="material-symbols-outlined text-primary">admin_panel_settings</span>
+                                Executive Command Center
+                            </h4>
+<p class="text-slate-600 dark:text-slate-400">Administrators get a high-level overview of department performance, budget health, and task completion rates.</p>
+</div>
+<div>
+<h4 class="text-xl font-bold mb-2 flex items-center gap-3">
+<span class="material-symbols-outlined text-primary">public</span>
+                                Public Transparency Portal
+                            </h4>
+<p class="text-slate-600 dark:text-slate-400">Citizens can track the progress of community projects, scheme disbursements, and local government spending in real-time.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Comparison Table -->
+<section class="py-24">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="text-center mb-16">
+<h2 class="text-3xl lg:text-4xl font-bold">Why Leading Districts Choose Saarthii</h2>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="border-b border-slate-200 dark:border-slate-800">
+<th class="py-6 px-4 text-sm font-semibold uppercase tracking-wider text-slate-500">Feature</th>
+<th class="py-6 px-4 text-sm font-bold uppercase tracking-wider text-slate-900 dark:text-white">Traditional GovTech</th>
+<th class="py-6 px-4 text-sm font-bold uppercase tracking-wider text-primary">Saarthii Platform</th>
+</tr>
+</thead>
+<tbody class="text-sm">
+<tr class="border-b border-slate-100 dark:border-slate-800">
+<td class="py-6 px-4 font-medium">Deployment Speed</td>
+<td class="py-6 px-4 text-slate-500">12 - 18 Months</td>
+<td class="py-6 px-4 font-bold text-slate-900 dark:text-white">3 - 6 Months</td>
+</tr>
+<tr class="border-b border-slate-100 dark:border-slate-800">
+<td class="py-6 px-4 font-medium">Data Integration</td>
+<td class="py-6 px-4 text-slate-500">Manual Entry / Siloed</td>
+<td class="py-6 px-4 font-bold text-slate-900 dark:text-white">Automated AI Mapping</td>
+</tr>
+<tr class="border-b border-slate-100 dark:border-slate-800">
+<td class="py-6 px-4 font-medium">User Interface</td>
+<td class="py-6 px-4 text-slate-500">Legacy / Complex</td>
+<td class="py-6 px-4 font-bold text-slate-900 dark:text-white">Modern / Intuitive</td>
+</tr>
+<tr class="border-b border-slate-100 dark:border-slate-800">
+<td class="py-6 px-4 font-medium">Decision Support</td>
+<td class="py-6 px-4 text-slate-500">Reactive Reports</td>
+<td class="py-6 px-4 font-bold text-slate-900 dark:text-white">Proactive AI Insights</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<!-- Impact Stats -->
+<section class="py-24 bg-primary text-white" id="impact">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="grid grid-cols-2 lg:grid-cols-4 gap-8 text-center">
+<div>
+<div class="text-4xl lg:text-6xl font-black mb-2">40%</div>
+<div class="text-primary-foreground/80 text-sm uppercase tracking-widest font-bold">Process Efficiency</div>
+</div>
+<div>
+<div class="text-4xl lg:text-6xl font-black mb-2">12M+</div>
+<div class="text-primary-foreground/80 text-sm uppercase tracking-widest font-bold">Citizens Served</div>
+</div>
+<div>
+<div class="text-4xl lg:text-6xl font-black mb-2">250+</div>
+<div class="text-primary-foreground/80 text-sm uppercase tracking-widest font-bold">Government Entities</div>
+</div>
+<div>
+<div class="text-4xl lg:text-6xl font-black mb-2">98%</div>
+<div class="text-primary-foreground/80 text-sm uppercase tracking-widest font-bold">Uptime Reliability</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Final CTA -->
+<section class="py-24">
+<div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="bg-slate-900 rounded-[2rem] p-12 lg:p-20 text-center relative overflow-hidden">
+<div class="absolute top-0 right-0 -translate-y-1/2 translate-x-1/2 w-96 h-96 bg-primary/20 rounded-full blur-3xl"></div>
+<div class="relative z-10">
+<h2 class="text-3xl lg:text-5xl font-bold text-white mb-6">Ready to Modernize Your Administration?</h2>
+<p class="text-slate-400 text-lg mb-10 max-w-2xl mx-auto">Join the digital governance revolution and provide the service your citizens deserve.</p>
+<div class="flex flex-col sm:flex-row gap-4 justify-center">
+<button class="bg-primary text-white px-8 py-4 rounded-xl font-bold text-lg hover:shadow-xl hover:shadow-primary/30 transition-all">Schedule a Consultation</button>
+<button class="bg-slate-800 text-white border border-slate-700 px-8 py-4 rounded-xl font-bold text-lg hover:bg-slate-700 transition-all">Download Brochure</button>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Footer -->
+<footer class="bg-slate-50 dark:bg-slate-900 pt-20 pb-10 border-t border-slate-200 dark:border-slate-800">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="grid lg:grid-cols-4 gap-12 mb-16">
+<div class="col-span-1 lg:col-span-1">
+<div class="flex items-center gap-2 mb-6">
+<div class="bg-primary p-1 rounded-lg text-white">
+<span class="material-symbols-outlined text-xl block">account_balance</span>
+</div>
+<span class="text-xl font-bold text-slate-900 dark:text-white">Saarthii</span>
+</div>
+<p class="text-slate-500 dark:text-slate-400 text-sm leading-relaxed mb-6">
+                        Pioneering the next generation of government technology to empower leaders and serve communities.
+                    </p>
+<div class="flex gap-4">
+<a class="w-10 h-10 rounded-full bg-slate-200 dark:bg-slate-800 flex items-center justify-center hover:bg-primary hover:text-white transition-colors" href="#">
+<span class="material-symbols-outlined text-lg">share</span>
+</a>
+<a class="w-10 h-10 rounded-full bg-slate-200 dark:bg-slate-800 flex items-center justify-center hover:bg-primary hover:text-white transition-colors" href="#">
+<span class="material-symbols-outlined text-lg">group</span>
+</a>
+</div>
+</div>
+<div>
+<h4 class="font-bold mb-6 text-slate-900 dark:text-white">Solutions</h4>
+<ul class="space-y-4 text-sm text-slate-500 dark:text-slate-400">
+<li><a class="hover:text-primary transition-colors" href="#">Digital Identity</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Public Finance</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Health Intelligence</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Smart Cities</a></li>
+</ul>
+</div>
+<div>
+<h4 class="font-bold mb-6 text-slate-900 dark:text-white">Company</h4>
+<ul class="space-y-4 text-sm text-slate-500 dark:text-slate-400">
+<li><a class="hover:text-primary transition-colors" href="#">About Us</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Case Studies</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Security</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Contact</a></li>
+</ul>
+</div>
+<div>
+<h4 class="font-bold mb-6 text-slate-900 dark:text-white">Legal</h4>
+<ul class="space-y-4 text-sm text-slate-500 dark:text-slate-400">
+<li><a class="hover:text-primary transition-colors" href="#">Privacy Policy</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Terms of Service</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">GDPR Compliance</a></li>
+</ul>
+</div>
+</div>
+<div class="pt-8 border-t border-slate-200 dark:border-slate-800 text-center text-sm text-slate-500 dark:text-slate-400">
+<p>© 2024 Saarthii GovTech Systems. All rights reserved.</p>
+</div>
+</div>
+</footer>
+</body></html>

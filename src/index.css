@@ -1,0 +1,40 @@
+@import url('https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --primary: #ec5b13;
+  --bg-light: #f8f6f6;
+  --bg-dark: #221610;
+  --text-slate-900: #0f172a;
+  --text-slate-600: #475569;
+  --text-slate-500: #64748b;
+  --text-slate-400: #94a3b8;
+  --bg-slate-50: #f8fafc;
+  --bg-slate-100: #f1f5f9;
+  --bg-slate-200: #e2e8f0;
+  --bg-slate-800: #1e293b;
+  --bg-slate-900: #0f172a;
+  --border-slate-100: #f1f5f9;
+  --border-slate-200: #e2e8f0;
+  --border-slate-700: #334155;
+  --border-slate-800: #1e293b;
+  
+  --font-display: 'Public Sans', sans-serif;
+}
+
+@layer base {
+  body {
+    @apply font-display bg-bg-light text-[#0f172a] overflow-x-hidden transition-colors duration-300;
+  }
+}
+
+.material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+
+/* We'll migrate the rest of the styles to Tailwind utilities in components */
+

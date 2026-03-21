@@ -1,12 +1,12 @@
-import { HeroSection } from '../components/HeroSection';
-import { ProblemSection } from '../components/ProblemSection';
-import { SolutionSection } from '../components/SolutionSection';
-import { HowItWorksSection } from '../components/HowItWorksSection';
-import { FeaturesSection } from '../components/FeaturesSection';
-import { DashboardPreview } from '../components/DashboardPreview';
-import { ComparisonTable } from '../components/ComparisonTable';
-import { ImpactStats } from '../components/ImpactStats';
-import { FinalCTA } from '../components/FinalCTA';
+import { HeroSection } from '../components/home/HeroSection';
+import { ProblemSection } from '../components/home/ProblemSection';
+import { SolutionSection } from '../components/home/SolutionSection';
+import { HowItWorksSection } from '../components/home/HowItWorksSection';
+import { FeaturesSection } from '../components/home/FeaturesSection';
+import { DashboardPreview } from '../components/home/DashboardPreview';
+import { ComparisonTable } from '../components/home/ComparisonTable';
+import { ImpactStats } from '../components/home/ImpactStats';
+import { FinalCTA } from '../components/home/FinalCTA';
 
 export function Home() {
   return (

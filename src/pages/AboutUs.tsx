@@ -1,8 +1,8 @@
-import { AboutHero } from '../components/AboutHero';
-import { VisionMission } from '../components/VisionMission';
-import { AboutApproach } from '../components/AboutApproach';
-import { AboutTeam } from '../components/AboutTeam';
-import { AboutRoadmap } from '../components/AboutRoadmap';
+import { AboutHero } from '../components/about/AboutHero';
+import { VisionMission } from '../components/about/VisionMission';
+import { AboutApproach } from '../components/about/AboutApproach';
+import { AboutTeam } from '../components/about/AboutTeam';
+import { AboutRoadmap } from '../components/about/AboutRoadmap';
 
 export function AboutUs() {
   return (

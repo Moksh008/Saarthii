@@ -1,48 +1,77 @@
-
-
+import { Home, Phone, Info, HelpCircle, Network } from "lucide-react";
 
 export function HeroSection() {
   return (
-    <section className="relative pt-20 pb-16 lg:pt-32 lg:pb-24 overflow-hidden">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center max-w-4xl mx-auto mb-16">
-          <span className="inline-block px-4 py-1.5 mb-6 text-xs font-bold tracking-widest uppercase bg-primary/10 text-primary rounded-full">Future of Governance</span>
-          <h1 className="text-5xl lg:text-7xl font-black text-slate-900 leading-[1.1] mb-8">
-            Empowering Governance with <span className="text-primary">AI-Driven</span> Insights
+    <div className="flex flex-col w-full pt-[70px]">
+      {/* Government Top Bar */}
+      <div className="bg-slate-900 text-slate-50 text-[10px] sm:text-xs py-2 px-4 sm:px-6 lg:px-8 hidden lg:flex justify-between items-center w-full">
+        <div className="flex items-center gap-4 divide-x divide-slate-700">
+          <div className="flex flex-col pr-4 leading-tight">
+            <span className="font-semibold text-white/90">भारत सरकार</span>
+            <span className="text-white/70">Government of India</span>
+          </div>
+          <div className="flex flex-col pl-4 leading-tight">
+            <span className="font-semibold text-white/90">कार्मिक, लोक शिकायत और पेंशन मंत्रालय</span>
+            <span className="text-white/70">Ministry of Personnel, Public Grievances & Pensions</span>
+          </div>
+        </div>
+        <div className="flex items-center gap-4 divide-x divide-slate-700 text-white/80">
+          <a href="/" className="flex items-center gap-1.5 pl-4 hover:text-white transition-colors"><Home className="w-3.5 h-3.5" /> Home</a>
+          <a href="#contact" className="flex items-center gap-1.5 pl-4 hover:text-white transition-colors"><Phone className="w-3.5 h-3.5" /> Contact Us</a>
+          <a href="/about" className="flex items-center gap-1.5 pl-4 hover:text-white transition-colors"><Info className="w-3.5 h-3.5" /> About Us</a>
+          <a href="#faq" className="flex items-center gap-1.5 pl-4 hover:text-white transition-colors"><HelpCircle className="w-3.5 h-3.5" /> FAQs/Help</a>
+          <a href="#sitemap" className="flex items-center gap-1.5 pl-4 hover:text-white transition-colors"><Network className="w-3.5 h-3.5" /> Site Map</a>
+        </div>
+      </div>
+
+      <section className="relative px-4 pt-10 pb-16 sm:px-6 lg:px-8 bg-slate-50 min-h-[90vh] flex items-center justify-center">
+      {/* Large rounded container */}
+      <div className="relative w-full max-w-[1400px] mx-auto rounded-[2rem] sm:rounded-[3rem] overflow-hidden min-h-[600px] lg:min-h-[750px] flex items-center shadow-2xl shadow-slate-200/50">
+        
+        {/* Background Image */}
+        <div className="absolute inset-0 w-full h-full">
+          <img 
+            src="https://images.unsplash.com/photo-1573164713988-8665fc963095?q=80&w=2069&auto=format&fit=crop" 
+            alt="Professional at work" 
+            className="w-full h-full object-cover object-center"
+          />
+        </div>
+
+        {/* Gradient Overlay */}
+        <div className="absolute inset-0 bg-gradient-to-r from-primary via-primary/90 to-transparent w-full md:w-3/4"></div>
+
+        {/* Content Container */}
+        <div className="relative z-10 p-8 sm:p-12 lg:p-20 flex flex-col justify-center w-full max-w-3xl">
+          <h1 className="text-4xl sm:text-5xl lg:text-7xl font-bold text-white leading-[1.1] mb-6 tracking-tight">
+            Strategic Clarity.<br/> Sustainable Growth.
           </h1>
-          <p className="text-lg lg:text-xl text-slate-600 mb-10 leading-relaxed max-w-2xl mx-auto">
-            Saarthii provides high-end GovTech solutions to streamline administrative workflows and enhance public service delivery with precision and scale.
+          <p className="text-lg sm:text-xl text-white/90 mb-10 max-w-xl leading-relaxed font-medium">
+            Saarthii helps governments refine strategy, strengthen operations, and scale with confidence through data-driven GovTech and practical execution.
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button className="bg-primary text-white px-8 py-4 rounded-xl font-bold text-lg transition-all hover:shadow-2xl hover:shadow-primary/30 hover:-translate-y-0.5">Start Your Transformation</button>
-            <button className="bg-white border border-slate-200 px-8 py-4 rounded-xl font-bold text-lg transition-all hover:bg-slate-50">View Case Studies</button>
+          <div>
+            <button className="bg-white text-slate-900 px-8 py-4 rounded-full font-bold text-lg transition-all hover:bg-slate-50 hover:shadow-lg flex items-center gap-2 group">
+              Book a Call 
+              <span className="material-symbols-outlined transition-transform group-hover:translate-x-1">arrow_forward</span>
+            </button>
           </div>
         </div>
 
-        <div className="relative mx-auto max-w-5xl">
-          <div className="rounded-2xl border border-slate-200 bg-white shadow-2xl overflow-hidden p-2">
-            <div className="bg-slate-100 rounded-xl aspect-video relative overflow-hidden">
-              <div className="absolute inset-0 bg-gradient-to-br from-slate-50 to-slate-200 flex flex-col p-6 z-10">
-                <div className="flex gap-4 mb-6">
-                  <div className="h-8 w-32 bg-slate-300 rounded-lg animate-pulse"></div>
-                  <div className="h-8 w-32 bg-slate-300 rounded-lg animate-pulse"></div>
-                </div>
-                <div className="grid grid-cols-3 gap-6 mb-6">
-                  <div className="h-32 bg-white rounded-xl shadow-sm"></div>
-                  <div className="h-32 bg-white rounded-xl shadow-sm"></div>
-                  <div className="h-32 bg-white rounded-xl shadow-sm"></div>
-                </div>
-                <div className="flex-grow bg-white rounded-xl shadow-sm"></div>
-              </div>
-              <img 
-                className="absolute inset-0 w-full h-full object-cover opacity-20" 
-                alt="Government dashboard showing analytics" 
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuA412VEOaUEiH4W4tXNzbBvJ54L_jHE3Pk-DGIxbryLXKPk8ZKRxOZ8oQodw3NZ4vqt_p0bms6uIqt1t2GFu3Zu1f2bjHAwb259zv0-tJpCMP0R42rDfNI2wmzCZ9mFZ8pkDMGXibIMgaQz4H3gEA24x9-TZXyOMzUNYJ6LjaFCOhuMMUw4DsjuS9E4QnFpJrP4y10TfF0H13EW-NCbAicxEXVKHEGdBWygdSy-RzQSwbKMSnOsCDj574HahBDOhIwXN4y_CiMAIxY"
-              />
+        {/* Stats floating card */}
+        <div className="absolute bottom-8 right-8 z-10 hidden lg:block">
+          <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-3xl p-6 shadow-2xl max-w-xs text-white">
+            <div className="flex -space-x-3 mb-4">
+              <img className="w-12 h-12 rounded-full border-2 border-white/50 object-cover" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=100&auto=format&fit=crop" alt="User 1"/>
+              <img className="w-12 h-12 rounded-full border-2 border-white/50 object-cover" src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=100&auto=format&fit=crop" alt="User 2"/>
+              <img className="w-12 h-12 rounded-full border-2 border-white/50 object-cover" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=100&auto=format&fit=crop" alt="User 3"/>
+              <div className="w-12 h-12 rounded-full border-2 border-white/50 bg-[#c4f052] text-slate-900 flex items-center justify-center text-lg font-bold shadow-inner">+</div>
             </div>
+            <h3 className="text-4xl font-bold mb-1">30k+</h3>
+            <p className="text-sm text-white/90 font-medium">Happy clients we have world-wide.</p>
           </div>
         </div>
+
       </div>
     </section>
+    </div>
   );
 }

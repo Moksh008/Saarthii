@@ -39,7 +39,7 @@ export function Navbar() {
           mobileExtraLinks={[]}
           auth={{
             login: { text: "Log in", url: "/login" },
-            signup: { text: "Sign up", url: "#" },
+            signup: { text: "Sign up", url: "/signup" },
           }}
         />
     </div>

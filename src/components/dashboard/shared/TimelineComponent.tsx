@@ -1,4 +1,4 @@
-import React from 'react';
+
 import { Check, Clock, Edit3 } from 'lucide-react';
 
 export function TimelineComponent() {

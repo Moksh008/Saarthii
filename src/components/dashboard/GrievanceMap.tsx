@@ -1,5 +1,5 @@
-import React from 'react';
-import { MapPin, Map as MapIcon, Layers, Filter } from 'lucide-react';
+
+import { Map as MapIcon, Layers, Filter } from 'lucide-react';
 
 export function GrievanceMap() {
   return (

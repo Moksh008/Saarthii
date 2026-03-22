@@ -1,4 +1,4 @@
-import React from 'react';
+
 import { Sparkles, BrainCircuit, Activity } from 'lucide-react';
 
 export function AIInsightPanel({ category, priority, confidence, sla }: { category: string, priority: string, confidence: number, sla: string }) {

@@ -1,4 +1,4 @@
-import React from 'react';
+
 import { AlertCircle, ArrowUpRight, ArrowDownRight } from 'lucide-react';
 
 export type PriorityLevel = 'High' | 'Medium' | 'Low';

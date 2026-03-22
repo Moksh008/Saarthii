@@ -1,4 +1,4 @@
-import React from 'react';
+
 
 export type GrievanceStatus = 'Pending' | 'Under Review' | 'Resolved';
 

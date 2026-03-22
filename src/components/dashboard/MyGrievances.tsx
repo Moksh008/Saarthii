@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { GrievanceCard } from './shared/GrievanceCard.tsx';
 import type { GrievanceProps } from './shared/GrievanceCard.tsx';
 import { Filter, Search } from 'lucide-react';

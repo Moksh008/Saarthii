@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { AlertTriangle, X } from 'lucide-react';
 
 export function AlertBanner({ title, message, type = 'warning' }: { title: string, message: string, type?: 'warning' | 'error' | 'info' }) {

@@ -1,4 +1,4 @@
-import React from 'react';
+
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, MapPin, Calendar, Clock, Share2, Download } from 'lucide-react';
 import { StatusBadge } from './shared/StatusBadge';

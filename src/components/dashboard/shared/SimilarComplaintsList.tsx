@@ -1,4 +1,4 @@
-import React from 'react';
+
 import { CopyPlus, ArrowRight } from 'lucide-react';
 
 export function SimilarComplaintsList() {

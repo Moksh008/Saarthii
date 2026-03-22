@@ -1,9 +1,13 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { auth } from '@/lib/firebase';
 
 export function SignupPage() {
   const [securityCode, setSecurityCode] = useState('');
   const [userInputCode, setUserInputCode] = useState('');
+  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
@@ -17,7 +21,7 @@ export function SignupPage() {
     setSecurityCode(code);
   };
 
-  const handleSignup = (e: React.FormEvent) => {
+  const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
     if (userInputCode !== securityCode) {
       setError('The security code does not match. Please try again.');
@@ -26,9 +30,17 @@ export function SignupPage() {
       return;
     }
     setError('');
-    // Proceed with creating citizen account
-    alert("Account created successfully!");
-    navigate('/login');
+
+    try {
+      // Create user with Firebase Auth
+      await createUserWithEmailAndPassword(auth, email, password);
+      // Proceed with creating citizen account
+      alert("Account created successfully!");
+      navigate('/login');
+    } catch (err: any) {
+      setError(err.message || 'An error occurred during signup.');
+      console.error(err);
+    }
   };
 
   return (
@@ -65,8 +77,28 @@ export function SignupPage() {
                   name="email"
                   type="email"
                   required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                   className="appearance-none block w-full px-3 py-2.5 border border-slate-300 rounded-lg shadow-sm placeholder-slate-400 focus:outline-none focus:ring-primary focus:border-primary sm:text-sm transition-colors"
                   placeholder="you@example.com"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label htmlFor="password" className="block text-sm font-medium text-slate-700">
+                Password
+              </label>
+              <div className="mt-1">
+                <input
+                  id="password"
+                  name="password"
+                  type="password"
+                  required
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="appearance-none block w-full px-3 py-2.5 border border-slate-300 rounded-lg shadow-sm placeholder-slate-400 focus:outline-none focus:ring-primary focus:border-primary sm:text-sm transition-colors"
+                  placeholder="••••••••"
                 />
               </div>
             </div>

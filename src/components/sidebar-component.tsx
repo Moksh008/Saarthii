@@ -13,7 +13,6 @@ import {
   Share,
   Security,
   Report,
-  DocumentAdd,
   ChartBar,
   Logout,
 } from "@carbon/icons-react";
@@ -182,51 +181,59 @@ interface SidebarContent {
   sections: MenuSectionT[];
 }
 
-function getSidebarContent(activeSection: string, currentPath: string): SidebarContent {
+function getSidebarContent(activeSection: string, currentPath: string, role?: string | null): SidebarContent {
   const contentMap: Record<string, SidebarContent> = {
     overview: {
-      title: "Overview",
+      title: role === 'ministry' ? "Analytics" : role === 'officer' ? "Management" : "Overview",
       sections: [
         {
           title: "Dashboard",
           items: [
-            { icon: <Dashboard size={16} className="text-slate-900" />, label: "Dashboard Overview", path: "/dashboard", isActive: currentPath === "/dashboard" },
-            { icon: <ChartBar size={16} className="text-slate-900" />, label: "Hotspots Map", path: "/dashboard/map", isActive: currentPath === "/dashboard/map" },
+            { icon: <Dashboard size={16} className="text-slate-900" />, label: role === 'ministry' ? "Global Analytics" : "Dashboard Overview", path: role === 'ministry' ? "/gov-dashboard/analytics" : (role === 'officer' ? "/gov-dashboard" : "/dashboard"), isActive: currentPath === "/dashboard" || currentPath === "/gov-dashboard" },
+            ...(role === 'ministry' ? [
+              { icon: <ChartBar size={16} className="text-slate-900" />, label: "Heatmaps", path: "/gov-dashboard/heatmaps", isActive: currentPath === "/gov-dashboard/heatmaps" },
+              { icon: <Time size={16} className="text-slate-900" />, label: "Trends", path: "/gov-dashboard/trends", isActive: currentPath === "/gov-dashboard/trends" }
+            ] : []),
+            ...(role === 'officer' ? [
+              { icon: <ChartBar size={16} className="text-slate-900" />, label: "SLA Tracking", path: "/gov-dashboard/sla", isActive: currentPath === "/gov-dashboard/sla" },
+              { icon: <Time size={16} className="text-slate-900" />, label: "Performance", path: "/gov-dashboard/performance", isActive: currentPath === "/gov-dashboard/performance" }
+            ] : []),
           ],
         },
       ],
     },
     services: {
-      title: "My Services",
+      title: role === 'citizen' ? "My Services" : "Operations",
       sections: [
         {
-          title: "Services Explorer",
+          title: "Complaint Management",
           items: [
             {
               icon: <Report size={16} className="text-slate-900" />,
               label: "Grievances",
               hasDropdown: true,
               children: [
-                { label: "My Grievances", path: "/dashboard/my-grievances", isActive: currentPath === "/dashboard/my-grievances" },
-                { label: "New Grievance", path: "/dashboard/new-grievance", isActive: currentPath === "/dashboard/new-grievance" },
+                ...(role === 'citizen' ? [
+                  { label: "Register Complaint", path: "/dashboard/new-grievance", isActive: currentPath === "/dashboard/new-grievance" },
+                  { label: "View My Complaints", path: "/dashboard/my-grievances", isActive: currentPath === "/dashboard/my-grievances" },
+                  { label: "Track Status", path: "/dashboard/my-grievances", isActive: currentPath === "/dashboard/my-grievances" }
+                ] : [
+                  { label: "View Assigned", path: "/gov-dashboard", isActive: currentPath === "/gov-dashboard" },
+                  { label: "Update Status", path: "/gov-dashboard", isActive: currentPath === "/gov-dashboard" }
+                ]),
               ]
             },
-            {
-              icon: <DocumentAdd size={16} className="text-slate-900" />,
-              label: "Appeals",
-              hasDropdown: true,
-              children: [
-                { label: "My Appeals", path: "/dashboard/my-appeals", isActive: currentPath === "/dashboard/my-appeals" }
-              ]
-            },
-            {
-              icon: <Share size={16} className="text-slate-900" />,
-              label: "Pension Services",
-              hasDropdown: true,
-              children: [
-                { label: "Pension Grievance", isExternal: true, link: "https://pgportal.gov.in/" }
-              ]
-            },
+            ...(role === 'citizen' ? [
+              {
+                icon: <Share size={16} className="text-slate-900" />,
+                label: "Feedback",
+                path: "/dashboard/feedback",
+                isActive: currentPath === "/dashboard/feedback"
+              }
+            ] : []),
+            ...(role === 'ministry' ? [
+              { icon: <Security size={16} className="text-slate-900" />, label: "Crisis Alerts", path: "/gov-dashboard/alerts", isActive: currentPath === "/gov-dashboard/alerts" }
+            ] : []),
           ],
         },
       ],
@@ -237,7 +244,8 @@ function getSidebarContent(activeSection: string, currentPath: string): SidebarC
         {
           title: "History",
           items: [
-            { icon: <Time size={16} className="text-slate-900" />, label: "Activity Logs", path: "/dashboard/activity-logs", isActive: currentPath === "/dashboard/activity-logs" },
+            { icon: <Time size={16} className="text-slate-900" />, label: "Activity Logs", path: role === 'citizen' ? "/dashboard/activity-logs" : "/gov-dashboard/logs", isActive: currentPath.includes("logs") },
+            { icon: <Report size={16} className="text-slate-900" />, label: "Notifications", path: "/dashboard/notifications", isActive: currentPath.includes("notifications") },
           ],
         },
       ],
@@ -264,14 +272,6 @@ function getSidebarContent(activeSection: string, currentPath: string): SidebarC
                 { label: "Change Password", path: "/dashboard/change-password", isActive: currentPath === "/dashboard/change-password" }
               ]
             },
-            {
-              icon: <SettingsIcon size={16} className="text-slate-900" />,
-              label: "Account Control",
-              hasDropdown: true,
-              children: [
-                { label: "Close Account", isDanger: true }
-              ]
-            },
           ],
         },
       ],
@@ -287,10 +287,12 @@ function IconNavButton({
   children,
   isActive = false,
   onClick,
+  title,
 }: {
   children: React.ReactNode;
   isActive?: boolean;
   onClick?: () => void;
+  title?: string;
 }) {
   return (
     <button
@@ -299,6 +301,7 @@ function IconNavButton({
         ${isActive ? "bg-primary/10 text-primary [&_svg]:!text-primary" : "hover:bg-primary/5 text-slate-500 [&_svg]:text-slate-500 hover:text-primary [&_svg]:hover:!text-primary"}`}
       style={{ transitionTimingFunction: softSpringEasing }}
       onClick={onClick}
+      title={title}
     >
       {children}
     </button>
@@ -308,18 +311,20 @@ function IconNavButton({
 function IconNavigation({
   activeSection,
   onSectionChange,
+  role,
 }: {
   activeSection: string;
   onSectionChange: (section: string) => void;
+  role?: string | null;
 }) {
   const navItems = [
-    { id: "overview", icon: <Dashboard size={16} />, label: "Overview" },
-    { id: "services", icon: <FolderOpen size={16} />, label: "My Services" },
-    { id: "activity", icon: <Time size={16} />, label: "Activity & Records" },
+    { id: "overview", icon: <Dashboard size={16} />, label: role === 'ministry' ? "Analytics" : "Overview" },
+    { id: "services", icon: <FolderOpen size={16} />, label: role === 'citizen' ? "Services" : "Operations" },
+    { id: "activity", icon: <Time size={16} />, label: "Activities" },
   ];
 
   return (
-    <aside className="bg-white flex flex-col gap-2 items-center p-4 w-16 h-[800px] border-r border-slate-200 rounded-l-2xl">
+    <aside className="bg-white flex flex-col gap-2 items-center p-4 w-16 h-screen sticky top-0 border-r border-slate-200 rounded-l-2xl overflow-hidden">
       {/* Logo */}
       <div className="mb-2 size-10 flex items-center justify-center">
         <div className="size-7">
@@ -334,6 +339,7 @@ function IconNavigation({
             key={item.id}
             isActive={activeSection === item.id}
             onClick={() => onSectionChange(item.id)}
+            title={item.label}
           >
             {item.icon}
           </IconNavButton>
@@ -413,11 +419,11 @@ function SectionTitle({
   );
 }
 
-function DetailSidebar({ activeSection }: { activeSection: string }) {
+function DetailSidebar({ activeSection, role }: { activeSection: string; role?: string | null }) {
   const location = useLocation();
   const [expandedItem, setExpandedItem] = useState<string | null>(null);
   const [isCollapsed, setIsCollapsed] = useState(false);
-  const content = getSidebarContent(activeSection, location.pathname);
+  const content = getSidebarContent(activeSection, location.pathname, role);
 
   const toggleExpanded = (itemKey: string) => {
     setExpandedItem((prev) => (prev === itemKey ? null : itemKey));
@@ -427,7 +433,7 @@ function DetailSidebar({ activeSection }: { activeSection: string }) {
 
   return (
     <aside
-      className={`bg-white flex flex-col gap-4 items-start p-4 rounded-r-2xl transition-all duration-500 h-[800px] border-r border-slate-200 ${
+      className={`bg-white flex flex-col gap-4 items-start p-4 rounded-r-2xl transition-all duration-500 h-screen sticky top-0 border-r border-slate-200 ${
         isCollapsed ? "w-16 min-w-16 !px-0 justify-center" : "w-80"
       }`}
       style={{ transitionTimingFunction: softSpringEasing }}
@@ -438,7 +444,7 @@ function DetailSidebar({ activeSection }: { activeSection: string }) {
       <SearchContainer isCollapsed={isCollapsed} />
 
       <div
-        className={`flex flex-col w-full overflow-y-auto transition-all duration-500 ${
+        className={`flex flex-col w-full overflow-hidden transition-all duration-500 ${
           isCollapsed ? "gap-2 items-center" : "gap-4 items-start"
         }`}
         style={{ transitionTimingFunction: softSpringEasing }}
@@ -658,13 +664,13 @@ function MenuSection({
 
 /* --------------------------------- Layout -------------------------------- */
 
-export function TwoLevelSidebar() {
-  const [activeSection, setActiveSection] = useState("dashboard");
+export function TwoLevelSidebar({ role }: { role?: string | null }) {
+  const [activeSection, setActiveSection] = useState("overview");
 
   return (
     <div className="flex flex-row">
-      <IconNavigation activeSection={activeSection} onSectionChange={setActiveSection} />
-      <DetailSidebar activeSection={activeSection} />
+      <IconNavigation role={role} activeSection={activeSection} onSectionChange={setActiveSection} />
+      <DetailSidebar activeSection={activeSection} role={role} />
     </div>
   );
 }

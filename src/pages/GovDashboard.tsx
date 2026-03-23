@@ -1,10 +1,10 @@
 import { DashboardSidebar } from '@/components/DashboardSidebar';
 import { Outlet } from 'react-router-dom';
 
-export function Dashboard() {
+export function GovDashboard() {
+
   return (
     <div className="h-screen bg-slate-50 flex overflow-hidden">
-      {/* Sidebar Navigation */}
       <DashboardSidebar />
 
       {/* Main Content Area */}

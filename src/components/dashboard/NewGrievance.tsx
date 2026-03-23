@@ -9,6 +9,8 @@ export function NewGrievance() {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [location, setLocation] = useState('');
+  const [files, setFiles] = useState<File[]>([])
+  const [previews, setPreviews] = useState<string[]>([])
   
   const [isTyping, setIsTyping] = useState(false);
   const [showAI, setShowAI] = useState(false);
@@ -40,7 +42,21 @@ export function NewGrievance() {
             {/* AI Banner indicator */}
             <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-400 via-primary to-purple-500 opacity-50"></div>
             
-            <form className="space-y-6" onSubmit={(e) => { e.preventDefault(); alert("Form submitted via Mocked API."); navigate('/dashboard/my-grievances'); }}>
+            <form className="space-y-6" onSubmit={async (e) => {
+                e.preventDefault();
+                // Upload files first
+                const uploadedUrls: string[] = []
+                for (const f of files) {
+                  const fd = new FormData()
+                  fd.append('file', f)
+                  const res = await fetch((import.meta.env.VITE_API_BASE || '') + '/uploads/', { method: 'POST', body: fd, credentials: 'include' })
+                  const data = await res.json()
+                  if (res.ok && data.url) uploadedUrls.push(data.url)
+                }
+
+                alert('Form submitted via API (mock). Uploaded: ' + uploadedUrls.join(', '))
+                navigate('/dashboard/my-grievances');
+              }}>
               <div>
                 <label className="block text-sm font-semibold text-slate-900 mb-2">Complaint Title</label>
                 <input 
@@ -82,6 +98,23 @@ export function NewGrievance() {
                     placeholder="Search for an exact map location..."
                     className="w-full pl-10 pr-4 py-3 rounded-lg border border-slate-200 outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all text-slate-900"
                   />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-slate-900 mb-2">Attach images (optional)</label>
+                <input type="file" accept="image/*" multiple onChange={(e) => {
+                  const list = e.target.files
+                  if (!list) return
+                  const arr = Array.from(list)
+                  setFiles(arr)
+                  setPreviews(arr.map(f => URL.createObjectURL(f)))
+                }} />
+
+                <div className="mt-3 flex gap-3">
+                  {previews.map((p, idx) => (
+                    <img key={idx} src={p} className="w-24 h-24 object-cover rounded-lg border" />
+                  ))}
                 </div>
               </div>
 

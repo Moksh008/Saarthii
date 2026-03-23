@@ -1,24 +1,40 @@
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { Navbar } from './components/common/Navbar';
+import { ProtectedRoute } from './components/common/ProtectedRoute';
 import { Footer } from './components/common/Footer';
 import { Home } from './pages/Home';
 import { AboutUs } from './pages/AboutUs';
 import { LoginPage } from './pages/LoginPage';
 import { SignupPage } from './pages/SignupPage';
 import { Dashboard } from './pages/Dashboard';
-import { DashboardOverview } from './components/dashboard/DashboardOverview';
-import { MyGrievances } from './components/dashboard/MyGrievances';
-import { NewGrievance } from './components/dashboard/NewGrievance';
-import { MyAppeals } from './components/dashboard/MyAppeals';
-import { ActivityLogs } from './components/dashboard/ActivityLogs';
-import { EditProfile } from './components/dashboard/EditProfile';
-import { ChangePassword } from './components/dashboard/ChangePassword';
-import { GrievanceDetail } from './components/dashboard/GrievanceDetail';
-import { GrievanceMap } from './components/dashboard/GrievanceMap';
+import { AuthProvider, useAuth } from './context/AuthContext';
+import React, { Suspense } from 'react'
+
+const DashboardOverview = React.lazy(() => import('./components/dashboard/DashboardOverview').then(m => ({ default: m.DashboardOverview })))
+const MyGrievances = React.lazy(() => import('./components/dashboard/MyGrievances').then(m => ({ default: m.MyGrievances })))
+const NewGrievance = React.lazy(() => import('./components/dashboard/NewGrievance').then(m => ({ default: m.NewGrievance })))
+const MyAppeals = React.lazy(() => import('./components/dashboard/MyAppeals').then(m => ({ default: m.MyAppeals })))
+const ActivityLogs = React.lazy(() => import('./components/dashboard/ActivityLogs').then(m => ({ default: m.ActivityLogs })))
+const EditProfile = React.lazy(() => import('./components/dashboard/EditProfile').then(m => ({ default: m.EditProfile })))
+const ChangePassword = React.lazy(() => import('./components/dashboard/ChangePassword').then(m => ({ default: m.ChangePassword })))
+const GrievanceDetail = React.lazy(() => import('./components/dashboard/GrievanceDetail').then(m => ({ default: m.GrievanceDetail })))
+const GrievanceMap = React.lazy(() => import('./components/dashboard/GrievanceMap').then(m => ({ default: m.GrievanceMap })))
+const GovDashboard = React.lazy(() => import('./pages/GovDashboard').then(m => ({ default: m.GovDashboard })))
+const OfficerOverview = React.lazy(() => import('./components/dashboard/OfficerOverview').then(m => ({ default: m.OfficerOverview })))
+const MinistryOverview = React.lazy(() => import('./components/dashboard/MinistryOverview').then(m => ({ default: m.MinistryOverview })))
+
+function GovDashboardIndex() {
+  const { user } = useAuth();
+  return (
+    <Suspense fallback={<div className="p-8 text-center animate-pulse text-slate-400">Loading Dashboard...</div>}>
+      {user?.role === 'ministry' || user?.role === 'mp_mla' ? <MinistryOverview /> : <OfficerOverview />}
+    </Suspense>
+  );
+}
 
 function AppContent() {
   const location = useLocation();
-  const isDashboard = location.pathname.startsWith('/dashboard');
+  const isDashboard = location.pathname.startsWith('/dashboard') || location.pathname.startsWith('/gov-dashboard');
 
   return (
     <div className="min-h-screen">
@@ -29,16 +45,26 @@ function AppContent() {
           <Route path="/about" element={<AboutUs />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<SignupPage />} />
-            <Route path="/dashboard" element={<Dashboard />}>
-            <Route index element={<DashboardOverview />} />
-            <Route path="map" element={<GrievanceMap />} />
-            <Route path="my-grievances" element={<MyGrievances />} />
-            <Route path="grievances/:id" element={<GrievanceDetail />} />
-            <Route path="new-grievance" element={<NewGrievance />} />
-            <Route path="my-appeals" element={<MyAppeals />} />
-            <Route path="activity-logs" element={<ActivityLogs />} />
-            <Route path="edit-profile" element={<EditProfile />} />
-            <Route path="change-password" element={<ChangePassword />} />
+          
+          {/* Citizen Dashboard Routes */}
+          <Route path="/dashboard" element={<ProtectedRoute allowedRoles={['citizen']}><Dashboard /></ProtectedRoute>}>
+            <Route index element={<Suspense fallback={<div>Loading...</div>}><DashboardOverview /></Suspense>} />
+            <Route path="map" element={<Suspense fallback={<div>Loading map...</div>}><GrievanceMap /></Suspense>} />
+            <Route path="my-grievances" element={<Suspense fallback={<div>Loading grievances...</div>}><MyGrievances /></Suspense>} />
+            <Route path="grievances/:id" element={<Suspense fallback={<div>Loading...</div>}><GrievanceDetail /></Suspense>} />
+            <Route path="new-grievance" element={<Suspense fallback={<div>Loading form...</div>}><NewGrievance /></Suspense>} />
+            <Route path="my-appeals" element={<Suspense fallback={<div>Loading appeals...</div>}><MyAppeals /></Suspense>} />
+            <Route path="activity-logs" element={<Suspense fallback={<div>Loading...</div>}><ActivityLogs /></Suspense>} />
+            <Route path="edit-profile" element={<Suspense fallback={<div>Loading...</div>}><EditProfile /></Suspense>} />
+            <Route path="change-password" element={<Suspense fallback={<div>Loading...</div>}><ChangePassword /></Suspense>} />
+          </Route>
+
+          {/* Government Dashboard Routes */}
+          <Route path="/gov-dashboard" element={<ProtectedRoute allowedRoles={['officer', 'ministry', 'mp_mla']}><Suspense fallback={<div>Loading Gov Dashboard...</div>}><GovDashboard /></Suspense></ProtectedRoute>}>
+            <Route index element={<GovDashboardIndex />} />
+            <Route path="analytics" element={<Suspense fallback={<div>Loading...</div>}><MinistryOverview /></Suspense>} />
+            <Route path="heatmaps" element={<Suspense fallback={<div>Loading...</div>}><GrievanceMap /></Suspense>} />
+            <Route path="sla" element={<Suspense fallback={<div>Loading...</div>}><OfficerOverview /></Suspense>} />
           </Route>
         </Routes>
       </main>
@@ -50,7 +76,9 @@ function AppContent() {
 function App() {
   return (
     <Router>
-      <AppContent />
+      <AuthProvider>
+        <AppContent />
+      </AuthProvider>
     </Router>
   );
 }

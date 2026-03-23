@@ -1,12 +1,14 @@
 import { useState, useEffect, useRef } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Eye, EyeOff } from "lucide-react";
-import { signInWithEmailAndPassword, signInWithPopup, getAdditionalUserInfo } from "firebase/auth";
-import { auth, googleProvider } from "@/lib/firebase";
+import { Eye, EyeOff, Phone } from "lucide-react";
+import apiFetch from '@/lib/api'
+import { auth, googleProvider } from '@/lib/firebase'
+import { useAuth } from '@/context/AuthContext'
+import type { ConfirmationResult } from 'firebase/auth'
+import { signInWithPopup, signInWithEmailAndPassword, RecaptchaVerifier, signInWithPhoneNumber } from 'firebase/auth'
 
 interface PupilProps {
   size?: number;
@@ -176,10 +178,17 @@ export function LoginPage() {
   const [isTyping, setIsTyping] = useState(false);
   const [isLookingAtEachOther, setIsLookingAtEachOther] = useState(false);
   const [isPurplePeeking, setIsPurplePeeking] = useState(false);
+  const [usePhone, setUsePhone] = useState(false);
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [otp, setOtp] = useState("");
+  const [showOtpInput, setShowOtpInput] = useState(false);
+  const [confirmationResult, setConfirmationResult] = useState<ConfirmationResult | null>(null);
+
   const purpleRef = useRef<HTMLDivElement>(null);
   const blackRef = useRef<HTMLDivElement>(null);
   const yellowRef = useRef<HTMLDivElement>(null);
   const orangeRef = useRef<HTMLDivElement>(null);
+  const recaptchaVerifierRef = useRef<RecaptchaVerifier | null>(null);
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
@@ -258,54 +267,144 @@ export function LoginPage() {
   const yellowPos = calculatePosition(yellowRef);
   const orangePos = calculatePosition(orangeRef);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const { login } = useAuth();
+  const location = useLocation();
+  
+  const from = (location.state as any)?.from?.pathname || null;
+
+  const handleRedirect = (role: string) => {
+    if (from) {
+      navigate(from, { replace: true });
+    } else if (role === 'citizen') {
+      navigate('/dashboard');
+    } else {
+      navigate('/gov-dashboard');
+    }
+  };
+
+  const setupRecaptcha = () => {
+    if (recaptchaVerifierRef.current) return;
+    try {
+      recaptchaVerifierRef.current = new RecaptchaVerifier(auth, 'recaptcha-container', {
+        'size': 'invisible',
+        'callback': () => {
+          console.log("Recaptcha verified");
+        }
+      });
+    } catch (e) {
+      console.error("Recaptcha Setup error", e);
+    }
+  };
+
+  const handleSendOtp = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
     setIsLoading(true);
-    
-    if (activeTab === 'citizen') {
-      try {
-        await signInWithEmailAndPassword(auth, email, password);
-        alert(`Citizen Login successful!`);
-        setIsLoading(false);
-        navigate('/dashboard');
-      } catch (err: any) {
-        setIsLoading(false);
-        if (err.code === 'auth/user-not-found' || err.code === 'auth/invalid-credential') {
-          setError("Account not found. Please sign up to create an account.");
-        } else {
-          setError(err.message || "Failed to log in.");
-        }
+    setupRecaptcha();
+
+    try {
+      const appVerifier = recaptchaVerifierRef.current;
+      if (!appVerifier) throw new Error("Recaptcha not initialized");
+      
+      const formattedPhone = phoneNumber.startsWith('+') ? phoneNumber : `+91${phoneNumber}`;
+      const confirmation = await signInWithPhoneNumber(auth, formattedPhone, appVerifier);
+      setConfirmationResult(confirmation);
+      setShowOtpInput(true);
+    } catch (err: any) {
+      setError(err.message || 'Failed to send OTP. Please check the phone number.');
+      if (recaptchaVerifierRef.current) {
+        recaptchaVerifierRef.current.clear();
+        recaptchaVerifierRef.current = null;
       }
-    } else {
-      // Logic for official tab (placeholder)
-      await new Promise(resolve => setTimeout(resolve, 500));
-      alert(`Official Login successful!`);
+    } finally {
       setIsLoading(false);
-      navigate('/dashboard');
+    }
+  };
+
+  const handleVerifyOtp = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError("");
+    setIsLoading(true);
+
+    try {
+      if (!confirmationResult) throw new Error("No confirmation result");
+      const result = await confirmationResult.confirm(otp);
+      const idToken = await result.user.getIdToken();
+      
+      const userData = await apiFetch('/auth/firebase-login', { 
+        method: 'POST', 
+        body: JSON.stringify({ idToken }) 
+      });
+      
+      login(userData);
+      handleRedirect(userData.role);
+    } catch (err: any) {
+      setError(err.message || 'Invalid OTP. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (usePhone && activeTab === 'citizen') {
+      if (!showOtpInput) return handleSendOtp(e);
+      return handleVerifyOtp(e);
+    }
+    
+    setError("");
+    setIsLoading(true);
+    
+    try {
+      if (activeTab === 'citizen') {
+        // 1. Firebase login
+        const userCredential = await signInWithEmailAndPassword(auth, email, password);
+        const idToken = await userCredential.user.getIdToken();
+        
+        // 2. Backend session
+        const userData = await apiFetch('/auth/firebase-login', { 
+          method: 'POST', 
+          body: JSON.stringify({ idToken }) 
+        });
+        
+        login(userData);
+        handleRedirect(userData.role);
+      } else {
+        // Official Login via backend
+        const userData = await apiFetch('/auth/official-login', {
+          method: 'POST',
+          body: JSON.stringify({ email, password })
+        });
+        
+        login(userData);
+        handleRedirect(userData.role);
+      }
+    } catch (err: any) {
+      setError(err.message || 'Failed to log in. Please check your credentials.');
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const handleGoogleLogin = async () => {
     setError("");
     try {
-      const result = await signInWithPopup(auth, googleProvider);
-      const isNewUser = getAdditionalUserInfo(result)?.isNewUser;
+      const result = await signInWithPopup(auth, googleProvider)
+      const idToken = await result.user.getIdToken()
       
-      if (isNewUser) {
-        // If it's a new user, delete their account and tell them to sign up properly
-        await result.user.delete();
-        setError("Account not found in our database. Please sign up as a Citizen first to create an account.");
-        // Sign out just in case
-        auth.signOut();
-        return;
-      }
-
-      alert("Google Login successful!");
-      navigate('/dashboard');
+      const userData = await apiFetch('/auth/firebase-login', { 
+        method: 'POST', 
+        body: JSON.stringify({ idToken }) 
+      })
+      
+      login(userData);
+      handleRedirect(userData.role);
     } catch (err: any) {
-      setError(err.message || "Google login failed.");
-      console.error(err);
+      if (err.status === 404) {
+        setError('Account not found. Please sign up first.');
+      } else {
+        setError(err.message || 'Google login failed.');
+      }
     }
   };
 
@@ -431,27 +530,50 @@ export function LoginPage() {
             <div className="flex bg-slate-100 p-1 rounded-lg mb-6">
               <button
                 type="button"
-                onClick={() => setActiveTab('citizen')}
+                onClick={() => { setActiveTab('citizen'); setUsePhone(false); setShowOtpInput(false); }}
                 className={`flex-1 py-2 text-sm font-semibold rounded-md transition-all ${
                   activeTab === 'citizen'
                     ? 'bg-white text-slate-900 shadow-sm ring-1 ring-slate-900/5'
                     : 'text-slate-500 hover:text-slate-700 hover:bg-slate-200/50'
                 }`}
+
+
               >
                 Citizen
               </button>
               <button
                 type="button"
-                onClick={() => setActiveTab('official')}
+                onClick={() => { setActiveTab('official'); setUsePhone(false); setShowOtpInput(false); }}
                 className={`flex-1 py-2 text-sm font-semibold rounded-md transition-all ${
                   activeTab === 'official'
                     ? 'bg-white text-slate-900 shadow-sm ring-1 ring-slate-900/5'
                     : 'text-slate-500 hover:text-slate-700 hover:bg-slate-200/50'
                 }`}
               >
-                Government Official
+                Official
               </button>
             </div>
+
+            {activeTab === 'citizen' && (
+               <div className="flex justify-center gap-4 py-2">
+                <div>Login as a Proud Citizen</div>
+
+                 {/* <button
+                    type="button"
+                    onClick={() => { setUsePhone(false); setShowOtpInput(false); setError(""); }}
+                    className={`px-4 py-1.5 text-xs font-bold rounded-full border transition-all ${!usePhone ? 'bg-primary text-white border-primary shadow-lg' : 'bg-transparent text-slate-500 border-slate-200'}`}
+                 >
+                   Email Login
+                 </button> */}
+                 {/* <button
+                    type="button"
+                    onClick={() => { setUsePhone(true); setShowOtpInput(false); setError(""); }}
+                    className={`px-4 py-1.5 text-xs font-bold rounded-full border transition-all ${usePhone ? 'bg-primary text-white border-primary shadow-lg' : 'bg-transparent text-slate-500 border-slate-200'}`}
+                 >
+                   OTP Login
+                 </button> */}
+               </div>
+            )}
 
             {activeTab === 'official' && (
               <div className="space-y-2">
@@ -470,84 +592,128 @@ export function LoginPage() {
               </div>
             )}
 
-            <div className="space-y-2">
-              <Label htmlFor="identifier" className="text-sm font-medium">
-                {activeTab === 'citizen' ? 'Phone Number or Email' : 'Username or Email'}
-              </Label>
-              <Input
-                id="identifier"
-                type="text"
-                placeholder={activeTab === 'citizen' ? "+91 9876543210 or user@example.com" : "admin@gov.in"}
-                value={email}
-                autoComplete="off"
-                onChange={(e) => setEmail(e.target.value)}
-                onFocus={() => setIsTyping(true)}
-                onBlur={() => setIsTyping(false)}
-                required
-                className="h-12 bg-background border-border/60 focus:border-primary"
-              />
-            </div>
+            {!usePhone || activeTab === 'official' ? (
+              <>
+                <div className="space-y-2">
+                  <Label htmlFor="email" className="text-sm font-medium">Email Address</Label>
+                  <Input
+                    id="email"
+                    type="email"
+                    placeholder="name@example.com"
+                    required
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    onFocus={() => setIsTyping(true)}
+                    onBlur={() => setIsTyping(false)}
+                    className="h-12 border-border/60 focus:border-primary focus:ring-primary shadow-sm"
+                  />
+                </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="password" className="text-sm font-medium">Password</Label>
-              <div className="relative">
-                <Input
-                  id="password"
-                  type={showPassword ? "text" : "password"}
-                  placeholder="••••••••"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                  className="h-12 pr-10 bg-background border-border/60 focus:border-primary"
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
-                >
-                  {showPassword ? <EyeOff className="size-5" /> : <Eye className="size-5" />}
-                </button>
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <Label htmlFor="password text-sm font-medium">Password</Label>
+                    <Link to="#" className="text-xs font-semibold text-primary hover:underline">Forgot password?</Link>
+                  </div>
+                  <div className="relative">
+                    <Input
+                      id="password"
+                      type={showPassword ? "text" : "password"}
+                      placeholder="••••••••"
+                      required
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      className="h-12 border-border/60 focus:border-primary focus:ring-primary pr-11 shadow-sm"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 p-2 hover:bg-slate-100 rounded-md text-slate-400 hover:text-slate-600 transition-colors"
+                    >
+                      {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                    </button>
+                  </div>
+                </div>
+              </>
+            ) : (
+              <div className="space-y-4">
+                {!showOtpInput ? (
+                  <div className="space-y-2">
+                    <Label htmlFor="phone" className="text-sm font-medium">Phone Number</Label>
+                    <div className="flex gap-2">
+                      <div className="flex items-center justify-center w-14 h-12 bg-slate-50 border border-slate-200 rounded-lg text-slate-500 font-medium text-sm">+91</div>
+                      <Input
+                        id="phone"
+                        type="tel"
+                        placeholder="98765-43210"
+                        required
+                        value={phoneNumber}
+                        onChange={(e) => setPhoneNumber(e.target.value)}
+                        className="h-12 flex-1 border-border/60 focus:border-primary focus:ring-primary shadow-sm"
+                      />
+                    </div>
+                  </div>
+                ) : (
+                  <div className="space-y-4 text-center">
+                    <div className="flex justify-center">
+                      <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center text-primary">
+                        <Phone size={24} />
+                      </div>
+                    </div>
+                    <Label htmlFor="otp" className="text-sm font-medium">Verification Code</Label>
+                    <p className="text-xs text-slate-500">Sent to {phoneNumber}</p>
+                    <Input
+                      id="otp"
+                      type="text"
+                      placeholder="6-digit OTP"
+                      required
+                      value={otp}
+                      onChange={(e) => setOtp(e.target.value)}
+                      className="h-14 text-center text-2xl font-bold tracking-[0.5em] border-border/60 focus:border-primary focus:ring-primary shadow-sm"
+                    />
+                    <button type="button" onClick={() => setShowOtpInput(false)} className="text-xs text-primary font-bold hover:underline mt-2">Change Number</button>
+                  </div>
+                )}
               </div>
-            </div>
+            )}
 
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-2">
-                <Checkbox id="remember" />
-                <Label htmlFor="remember" className="text-sm font-normal cursor-pointer">
-                  Remember me
-                </Label>
-              </div>
-              <a href="#" className="text-sm text-primary hover:underline font-medium">
-                Forgot password?
-              </a>
-            </div>
+            <div id="recaptcha-container"></div>
 
             {error && (
-              <div className="p-3 text-sm text-red-400 bg-red-950/20 border border-red-900/30 rounded-lg">
+              <div className="p-3 rounded-lg bg-red-50 border border-red-100 text-red-600 text-xs font-medium flex items-center gap-2">
+                <span className="w-1.5 h-1.5 rounded-full bg-red-600 animate-pulse"></span>
                 {error}
               </div>
             )}
 
-            <Button type="submit" className="w-full h-12 text-base font-medium" size="lg" disabled={isLoading}>
-              {isLoading ? "Signing in..." : "Sign in"}
+            <Button
+              type="submit"
+              disabled={isLoading}
+              className="w-full h-12 text-sm font-bold bg-primary hover:bg-primary/90 transition-all active:scale-[0.98] shadow-lg shadow-primary/20"
+            >
+              {isLoading ? (
+                <div className="flex items-center gap-2">
+                  <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                  <span>Please wait...</span>
+                </div>
+              ) : showOtpInput ? "Verify & Sign In" : usePhone ? "Send OTP" : "Sign In"}
             </Button>
           </form>
 
-          {activeTab === 'citizen' && (
-            <div className="mt-6">
-              <div className="relative mb-6">
-                <div className="absolute inset-0 flex items-center">
-                  <div className="w-full border-t border-slate-200" />
-                </div>
-                <div className="relative flex justify-center text-sm">
-                  <span className="px-2 bg-background text-muted-foreground">Or continue with</span>
-                </div>
+          <div className="mt-8">
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center">
+                <span className="w-full border-t border-slate-200"></span>
               </div>
-              <Button 
-                variant="outline" 
-                className="w-full h-12 bg-background border-border/60 hover:bg-accent flex items-center justify-center gap-2"
+              <div className="relative flex justify-center text-xs">
+                <span className="bg-background px-4 text-slate-500 font-medium font-inter uppercase tracking-widest">Or continue with</span>
+              </div>
+            </div>
+
+            <div className="mt-6">
+              <button
                 type="button"
                 onClick={handleGoogleLogin}
+                className="w-full flex items-center justify-center gap-3 h-12 bg-white border border-slate-200 rounded-xl hover:bg-slate-50 hover:border-slate-300 transition-all font-semibold text-slate-700 text-sm shadow-sm"
               >
                 <svg className="w-5 h-5" viewBox="0 0 24 24">
                   <path
@@ -566,12 +732,11 @@ export function LoginPage() {
                     d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
                     fill="#EA4335"
                   />
-                  <path d="M1 1h22v22H1z" fill="none" />
                 </svg>
                 Log in with Google
-              </Button>
+              </button>
             </div>
-          )}
+          </div>
 
           {activeTab === 'citizen' && (
             <div className="text-center text-sm text-muted-foreground mt-8">

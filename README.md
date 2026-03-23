@@ -1,73 +1,96 @@
-# React + TypeScript + Vite
+# Saarthii Landing
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+[![Vite](https://img.shields.io/badge/Vite-React-blue)](https://vitejs.dev/) [![TypeScript](https://img.shields.io/badge/TypeScript-%233178C6.svg?logo=typescript&logoColor=white)](https://www.typescriptlang.org/) [![Tailwind](https://img.shields.io/badge/Tailwind-CSS-teal)](https://tailwindcss.com/) [![License](https://img.shields.io/badge/License-MIT-lightgrey)](LICENSE)
 
-Currently, two official plugins are available:
+Beautiful, responsive landing pages for the Saarthii project built with React, TypeScript, Vite and Tailwind CSS.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Table of Contents
 
-## React Compiler
+- [Demo](#demo)
+- [Quick start](#quick-start)
+- [Project structure](#project-structure)
+- [Tech stack](#tech-stack)
+- [Scripts](#scripts)
+- [Contributing](#contributing)
+- [License](#license)
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Demo
 
-## Expanding the ESLint configuration
+Replace the screenshot below with an exported image from `public/` or `src/assets/` for a nicer visual.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+![Landing screenshot](public/screenshot-placeholder.png)
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+Live demo: Add your deployed URL here once available.
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+## Quick start
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+1. Install dependencies
+
+```bash
+npm install
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+2. Start development server (hot reload)
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm run dev
 ```
+
+3. Build for production
+
+```bash
+npm run build
+```
+
+4. Preview the production build locally
+
+```bash
+npm run preview
+```
+
+If you prefer Yarn or pnpm, replace `npm` with your package manager of choice.
+
+## Project structure
+
+- `src/` — application source (pages, components, styles)
+- `public/` — static assets and the single HTML entry
+- `index.html`, `package.json`, `vite.config.ts` — root config and scripts
+
+Open the app entry at [src/main.tsx](src/main.tsx#L1).
+
+## Tech stack
+
+- React + TypeScript
+- Vite for fast builds and HMR
+- Tailwind CSS for utility-first styling
+- ESLint + Prettier for code quality
+
+## Scripts
+
+- `npm run dev` — development server
+- `npm run build` — production build
+- `npm run preview` — preview production build
+- `npm run lint` — run ESLint
+- `npm run format` — format code with Prettier (if configured)
+
+Example: start dev server
+
+```bash
+npm run dev
+```
+
+## Contributing
+
+- Open issues for bugs or feature requests.
+- Create pull requests against `main` with a clear description and tests or screenshots when applicable.
+- Run linters and formatters before submitting: `npm run lint` and `npm run format`.
+
+If you'd like, I can add a CONTRIBUTING.md template and a screenshot placeholder image in `public/`.
+
+## License
+
+Add your project license (e.g., MIT) or keep internal.
+
+---
+
+_This README was polished for clarity and visual structure. Replace the screenshot placeholder with an actual image in `public/`._

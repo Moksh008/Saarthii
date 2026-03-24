@@ -8,7 +8,7 @@ import apiFetch from '@/lib/api'
 import { auth, googleProvider } from '@/lib/firebase'
 import { useAuth } from '@/context/AuthContext'
 import type { ConfirmationResult } from 'firebase/auth'
-import { signInWithPopup, signInWithEmailAndPassword, RecaptchaVerifier, signInWithPhoneNumber } from 'firebase/auth'
+import { signInWithPopup, RecaptchaVerifier, signInWithPhoneNumber } from 'firebase/auth'
 
 interface PupilProps {
   size?: number;
@@ -357,14 +357,10 @@ export function LoginPage() {
     
     try {
       if (activeTab === 'citizen') {
-        // 1. Firebase login
-        const userCredential = await signInWithEmailAndPassword(auth, email, password);
-        const idToken = await userCredential.user.getIdToken();
-        
-        // 2. Backend session
-        const userData = await apiFetch('/auth/firebase-login', { 
+        // 1. Backend session (Backend handles Firebase verification + DB lookup)
+        const userData = await apiFetch('/auth/login', { 
           method: 'POST', 
-          body: JSON.stringify({ idToken }) 
+          body: JSON.stringify({ email, password }) 
         });
         
         login(userData);
@@ -401,7 +397,15 @@ export function LoginPage() {
       handleRedirect(userData.role);
     } catch (err: any) {
       if (err.status === 404) {
-        setError('Account not found. Please sign up first.');
+        // User authenticated with Google but not in our DB
+        const user = auth.currentUser;
+        navigate('/signup', { 
+          state: { 
+            idToken: await user?.getIdToken(),
+            email: user?.email,
+            name: user?.displayName
+          } 
+        });
       } else {
         setError(err.message || 'Google login failed.');
       }

@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '@/lib/firebase';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import apiFetch from '@/lib/api';
+import { useAuth } from '@/context/AuthContext';
 
 export function SignupPage() {
   const [securityCode, setSecurityCode] = useState('');
@@ -18,6 +17,17 @@ export function SignupPage() {
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+  const { login } = useAuth();
+  const location = useLocation();
+  const googleState = location.state as { idToken?: string, email?: string, name?: string } | null;
+
+  // State pre-fill from Google if available
+  useEffect(() => {
+    if (googleState) {
+      if (googleState.email) setEmail(googleState.email);
+      if (googleState.name) setName(googleState.name);
+    }
+  }, [googleState]);
 
   // Generate a random 6-digit security code on mount
   useEffect(() => {
@@ -41,49 +51,57 @@ export function SignupPage() {
     setIsLoading(true);
 
     try {
-      let firebaseUid: string;
-      try {
-        // 1. Create user with Firebase Auth
-        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-        firebaseUid = userCredential.user.uid;
-      } catch (fbErr: any) {
-        if (fbErr.code === 'auth/email-already-in-use') {
-          // If already in Firebase, try to sign in to get the UID and sync with Saarthii DB
-          const userCredential = await signInWithEmailAndPassword(auth, email, password);
-          firebaseUid = userCredential.user.uid;
-        } else {
-          throw fbErr;
+      // 1. Create user in backend (Backend handles Firebase + MongoDB)
+      const signupRequest: any = {
+        user_data: {
+          name: name,
+          email: email,
+          phone: phone,
+          role: 'citizen',
+          address: address,
+          city: city,
+          state: state,
+          pincode: pincode
         }
-      }
-
-      // 2. Create user in backend MongoDB
-      const signupData = {
-        auth0_id: firebaseUid,
-        name: name,
-        email: email,
-        phone: phone,
-        role: 'citizen',
-        address: address,
-        city: city,
-        state: state,
-        pincode: pincode
       };
+
+      if (googleState?.idToken) {
+        signupRequest.id_token = googleState.idToken;
+      } else {
+        signupRequest.password = password;
+      }
 
       try {
         await apiFetch('/auth/signup', {
           method: 'POST',
-          body: JSON.stringify(signupData)
+          body: JSON.stringify(signupRequest)
         });
-        alert("Account created and synchronized successfully! Please log in.");
+        
+        // 2. Automatically log in after signup
+        let loginData;
+        if (googleState?.idToken) {
+          loginData = await apiFetch('/auth/firebase-login', {
+            method: 'POST',
+            body: JSON.stringify({ idToken: googleState.idToken })
+          });
+        } else {
+          loginData = await apiFetch('/auth/login', {
+            method: 'POST',
+            body: JSON.stringify({ email, password })
+          });
+        }
+
+        login(loginData);
+        alert("Account created and you are now logged in!");
+        navigate('/dashboard');
       } catch (apiErr: any) {
         if (apiErr.status === 400 || apiErr.message?.includes("already exists")) {
-          alert("This account is already fully registered. Redirecting to login...");
+          alert("This account is already registered. Redirecting to login...");
+          navigate('/login');
         } else {
           throw apiErr;
         }
       }
-
-      navigate('/login');
     } catch (err: any) {
       setError(err.message || 'An error occurred during signup.');
       console.error(err);

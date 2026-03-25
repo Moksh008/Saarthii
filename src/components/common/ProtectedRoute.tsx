@@ -27,7 +27,10 @@ export function ProtectedRoute({ children, allowedRoles }: ProtectedRouteProps) 
 
   if (allowedRoles && !allowedRoles.includes(user.role)) {
     // Role not authorized, redirect to their default dashboard
-    const defaultPath = user.role === 'citizen' ? '/dashboard' : '/gov-dashboard';
+    let defaultPath = '/dashboard';
+    if (user.role === 'admin') defaultPath = '/admin-dashboard';
+    else if (user.role !== 'citizen') defaultPath = '/gov-dashboard';
+    
     return <Navigate to={defaultPath} replace />;
   }
 

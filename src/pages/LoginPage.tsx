@@ -183,6 +183,7 @@ export function LoginPage() {
   const [otp, setOtp] = useState("");
   const [showOtpInput, setShowOtpInput] = useState(false);
   const [confirmationResult, setConfirmationResult] = useState<ConfirmationResult | null>(null);
+  const [selectedRole, setSelectedRole] = useState("officer");
 
   const purpleRef = useRef<HTMLDivElement>(null);
   const blackRef = useRef<HTMLDivElement>(null);
@@ -586,12 +587,15 @@ export function LoginPage() {
                   id="role"
                   name="role"
                   required
+                  value={selectedRole}
+                  onChange={(e) => setSelectedRole(e.target.value)}
                   className="w-full h-12 px-3 bg-background border border-border/60 rounded-md focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary shadow-sm"
                 >
-                  <option value="" disabled selected>Select your designation...</option>
+                  <option value="" disabled>Select your designation...</option>
                   <option value="mc">Municipal Corporation (MC)</option>
                   <option value="ministry">Ministry</option>
                   <option value="mp_mla">MP / MLA</option>
+                  <option value="admin">System Admin</option>
                 </select>
               </div>
             )}

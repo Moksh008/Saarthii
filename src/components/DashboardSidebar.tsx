@@ -32,22 +32,54 @@ export function DashboardSidebar() {
       },
     ];
 
-    if (role === 'ministry' || role === 'mp_mla') {
+    if (role === 'ministry') {
       return [
         {
-          label: "Analytics",
+          label: "Ministry Analytics",
           href: "/gov-dashboard/analytics",
-          icon: <BarChart3 className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />,
+          icon: <BarChart3 className="text-neutral-700 h-5 w-5" />,
         },
         {
           label: "Regional Heatmaps",
           href: "/gov-dashboard/heatmaps",
-          icon: <MapIcon className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />,
+          icon: <MapIcon className="text-neutral-700 h-5 w-5" />,
         },
         {
           label: "Crisis Alerts",
           href: "/gov-dashboard/alerts",
-          icon: <AlertTriangle className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />,
+          icon: <AlertTriangle className="text-neutral-700 h-5 w-5" />,
+        },
+        ...commonLinks
+      ];
+    }
+
+    if (role === 'mp_mla') {
+      return [
+        {
+          label: "Constituency Stats",
+          href: "/gov-dashboard/analytics",
+          icon: <BarChart3 className="text-neutral-700 h-5 w-5" />,
+        },
+        {
+          label: "Area Heatmaps",
+          href: "/gov-dashboard/heatmaps",
+          icon: <MapIcon className="text-neutral-700 h-5 w-5" />,
+        },
+        ...commonLinks
+      ];
+    }
+
+    if (role === 'mc') {
+      return [
+        {
+          label: "City Management",
+          href: "/gov-dashboard",
+          icon: <LayoutDashboard className="text-neutral-700 h-5 w-5" />,
+        },
+        {
+          label: "Ward Analytics",
+          href: "/gov-dashboard/analytics",
+          icon: <BarChart3 className="text-neutral-700 h-5 w-5" />,
         },
         ...commonLinks
       ];

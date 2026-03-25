@@ -22,19 +22,27 @@ const GrievanceMap = React.lazy(() => import('./components/dashboard/GrievanceMa
 const GovDashboard = React.lazy(() => import('./pages/GovDashboard').then(m => ({ default: m.GovDashboard })))
 const OfficerOverview = React.lazy(() => import('./components/dashboard/OfficerOverview').then(m => ({ default: m.OfficerOverview })))
 const MinistryOverview = React.lazy(() => import('./components/dashboard/MinistryOverview').then(m => ({ default: m.MinistryOverview })))
+const McOverview = React.lazy(() => import('./components/dashboard/McOverview').then(m => ({ default: m.McOverview })))
+const MlaMPOverview = React.lazy(() => import('./components/dashboard/MlaMPOverview').then(m => ({ default: m.MlaMPOverview })))
+const AdminDashboard = React.lazy(() => import('./pages/AdminDashboard').then(m => ({ default: m.AdminDashboard })))
 
 function GovDashboardIndex() {
   const { user } = useAuth();
   return (
     <Suspense fallback={<div className="p-8 text-center animate-pulse text-slate-400">Loading Dashboard...</div>}>
-      {user?.role === 'ministry' || user?.role === 'mp_mla' ? <MinistryOverview /> : <OfficerOverview />}
+      {user?.role === 'ministry' && <MinistryOverview />}
+      {user?.role === 'mp_mla' && <MlaMPOverview />}
+      {user?.role === 'mc' && <McOverview />}
+      {user?.role === 'officer' && <OfficerOverview />}
     </Suspense>
   );
 }
 
 function AppContent() {
   const location = useLocation();
-  const isDashboard = location.pathname.startsWith('/dashboard') || location.pathname.startsWith('/gov-dashboard');
+  const isDashboard = location.pathname.startsWith('/dashboard') || 
+                      location.pathname.startsWith('/gov-dashboard') ||
+                      location.pathname.startsWith('/admin-dashboard');
 
   return (
     <div className="min-h-screen">
@@ -60,12 +68,14 @@ function AppContent() {
           </Route>
 
           {/* Government Dashboard Routes */}
-          <Route path="/gov-dashboard" element={<ProtectedRoute allowedRoles={['officer', 'ministry', 'mp_mla']}><Suspense fallback={<div>Loading Gov Dashboard...</div>}><GovDashboard /></Suspense></ProtectedRoute>}>
+          <Route path="/gov-dashboard" element={<ProtectedRoute allowedRoles={['officer', 'ministry', 'mp_mla', 'mc']}><Suspense fallback={<div>Loading Gov Dashboard...</div>}><GovDashboard /></Suspense></ProtectedRoute>}>
             <Route index element={<GovDashboardIndex />} />
             <Route path="analytics" element={<Suspense fallback={<div>Loading...</div>}><MinistryOverview /></Suspense>} />
             <Route path="heatmaps" element={<Suspense fallback={<div>Loading...</div>}><GrievanceMap /></Suspense>} />
             <Route path="sla" element={<Suspense fallback={<div>Loading...</div>}><OfficerOverview /></Suspense>} />
           </Route>
+          {/* Admin Dashboard Route */}
+          <Route path="/admin-dashboard" element={<ProtectedRoute allowedRoles={['admin']}><Suspense fallback={<div>Loading Admin Dashboard...</div>}><AdminDashboard /></Suspense></ProtectedRoute>} />
         </Routes>
       </main>
       {!isDashboard && <Footer />}

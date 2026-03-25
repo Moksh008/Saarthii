@@ -276,6 +276,8 @@ export function LoginPage() {
   const handleRedirect = (role: string) => {
     if (from) {
       navigate(from, { replace: true });
+    } else if (role === 'admin') {
+      navigate('/admin-dashboard');
     } else if (role === 'citizen') {
       navigate('/dashboard');
     } else {

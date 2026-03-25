@@ -10,7 +10,7 @@ export function Footer() {
           <div>
             <div className="flex items-center gap-2 mb-6">
               <div className="bg-primary p-1 rounded-lg text-white">
-                <span className="material-symbols-outlined block">account_balance</span>
+                <span translate="no" className="material-symbols-outlined notranslate block">account_balance</span>
               </div>
               <span className="text-xl font-bold text-slate-900">Saarthii</span>
             </div>
@@ -19,10 +19,10 @@ export function Footer() {
             </p>
             <div className="flex gap-4">
               <a href="#" className="w-10 h-10 rounded-full bg-slate-200 flex items-center justify-center transition-all hover:bg-primary hover:text-white">
-                <span className="material-symbols-outlined">share</span>
+                <span translate="no" className="material-symbols-outlined notranslate">share</span>
               </a>
               <a href="#" className="w-10 h-10 rounded-full bg-slate-200 flex items-center justify-center transition-all hover:bg-primary hover:text-white">
-                <span className="material-symbols-outlined">group</span>
+                <span translate="no" className="material-symbols-outlined notranslate">group</span>
               </a>
             </div>
           </div>

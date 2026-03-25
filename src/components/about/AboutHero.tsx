@@ -15,11 +15,11 @@ export function AboutHero() {
         </p>
         <div className="flex justify-center gap-4">
           <div className="flex items-center gap-2 text-white/60 bg-white/5 px-4 py-2 rounded-lg border border-white/10">
-            <span className="material-symbols-outlined text-primary text-xl">verified_user</span>
+            <span translate="no" className="material-symbols-outlined notranslate text-primary text-xl">verified_user</span>
             <span className="text-sm font-medium">100% Secure</span>
           </div>
           <div className="flex items-center gap-2 text-white/60 bg-white/5 px-4 py-2 rounded-lg border border-white/10">
-            <span className="material-symbols-outlined text-primary text-xl">shield_with_heart</span>
+            <span translate="no" className="material-symbols-outlined notranslate text-primary text-xl">shield_with_heart</span>
             <span className="text-sm font-medium">Citizen Data Protection</span>
           </div>
         </div>

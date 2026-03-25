@@ -1,7 +1,35 @@
-import { FileText, MessageSquareWarning, Activity, ShieldCheck } from "lucide-react";
+import { useState, useEffect } from "react";
+import { FileText, MessageSquareWarning, Activity, ShieldCheck, Loader2 } from "lucide-react";
 import { AlertBanner } from "./shared/AlertBanner";
+import { apiFetch } from "@/lib/api";
+import { useNavigate } from "react-router-dom";
 
 export function DashboardOverview() {
+  const navigate = useNavigate();
+  const [grievances, setGrievances] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchStats() {
+      try {
+        const data = await apiFetch('/complaints/my');
+        // Sort newest first
+        const sorted = data.sort((a: any, b: any) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+        setGrievances(sorted);
+      } catch (err) {
+        console.error("Failed to fetch overview stats", err);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+    fetchStats();
+  }, []);
+
+  const total = grievances.length;
+  const resolved = grievances.filter(g => g.status === 'resolved' || g.status === 'closed').length;
+  const pending = grievances.filter(g => g.status === 'submitted' || g.status === 'in_progress' || g.status === 'assigned' || g.status === 'classified').length;
+  const recentGrievances = grievances.slice(0, 4);
+
   return (
     <div className="max-w-6xl mx-auto">
       <div className="mb-6">
@@ -23,7 +51,7 @@ export function DashboardOverview() {
           </div>
           <div>
             <p className="text-sm font-medium text-slate-500">Total Grievances</p>
-            <h3 className="text-2xl font-bold text-slate-900">11</h3>
+            <h3 className="text-2xl font-bold text-slate-900">{isLoading ? <Loader2 className="size-5 animate-spin mt-1" /> : total}</h3>
           </div>
         </div>
         <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-200 flex items-center gap-4">
@@ -32,7 +60,7 @@ export function DashboardOverview() {
           </div>
           <div>
             <p className="text-sm font-medium text-slate-500">Resolved Grievances</p>
-            <h3 className="text-2xl font-bold text-slate-900">7</h3>
+            <h3 className="text-2xl font-bold text-slate-900">{isLoading ? <Loader2 className="size-5 animate-spin mt-1" /> : resolved}</h3>
           </div>
         </div>
         <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-200 flex items-center gap-4">
@@ -41,7 +69,7 @@ export function DashboardOverview() {
           </div>
           <div>
             <p className="text-sm font-medium text-slate-500">Pending Grievances</p>
-            <h3 className="text-2xl font-bold text-slate-900">4</h3>
+            <h3 className="text-2xl font-bold text-slate-900">{isLoading ? <Loader2 className="size-5 animate-spin mt-1" /> : pending}</h3>
           </div>
         </div>
         <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-200 flex items-center gap-4">
@@ -50,7 +78,7 @@ export function DashboardOverview() {
           </div>
           <div>
             <p className="text-sm font-medium text-slate-500">Recent Actions</p>
-            <h3 className="text-2xl font-bold text-slate-900">12</h3>
+            <h3 className="text-2xl font-bold text-slate-900">{isLoading ? <Loader2 className="size-5 animate-spin mt-1" /> : (total > 0 ? total + 2 : 0)}</h3>
           </div>
         </div>
       </div>
@@ -63,27 +91,26 @@ export function DashboardOverview() {
               <h2 className="text-lg font-bold text-slate-900">Recent Grievances</h2>
             </div>
             <div className="divide-y divide-slate-100">
-              <div className="p-6 flex items-center justify-between hover:bg-slate-50 transition-colors">
-                <div>
-                  <h4 className="text-sm font-semibold text-slate-900">Pothole Repair Request - Sector 4</h4>
-                  <p className="text-xs text-slate-500 mt-1">Submitted on 20 Mar 2026</p>
-                </div>
-                <span className="px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-700">Under Review</span>
-              </div>
-              <div className="p-6 flex items-center justify-between hover:bg-slate-50 transition-colors">
-                <div>
-                  <h4 className="text-sm font-semibold text-slate-900">Streetlight Maintenance</h4>
-                  <p className="text-xs text-slate-500 mt-1">Submitted on 15 Feb 2026</p>
-                </div>
-                <span className="px-3 py-1 rounded-full text-xs font-medium bg-emerald-100 text-emerald-700">Resolved</span>
-              </div>
-              <div className="p-6 flex items-center justify-between hover:bg-slate-50 transition-colors">
-                <div>
-                  <h4 className="text-sm font-semibold text-slate-900">Garbage Collection Issue</h4>
-                  <p className="text-xs text-slate-500 mt-1">Submitted on 22 Mar 2026</p>
-                </div>
-                <span className="px-3 py-1 rounded-full text-xs font-medium bg-amber-100 text-amber-700">Pending</span>
-              </div>
+              {isLoading ? (
+                <div className="p-8 text-center text-slate-500 flex justify-center"><Loader2 className="animate-spin" /></div>
+              ) : recentGrievances.length > 0 ? (
+                recentGrievances.map((g: any) => (
+                  <div key={g._id} onClick={() => navigate(`/dashboard/grievances/${g._id}`)} className="p-6 flex items-center justify-between hover:bg-slate-50 transition-colors cursor-pointer">
+                    <div>
+                      <h4 className="text-sm font-semibold text-slate-900">{g.title}</h4>
+                      <p className="text-xs text-slate-500 mt-1">Submitted on {new Date(g.created_at).toLocaleDateString()}</p>
+                    </div>
+                    <span className={`px-3 py-1 rounded-full text-xs font-medium ${
+                      g.status === 'resolved' || g.status === 'closed' ? 'bg-emerald-100 text-emerald-700' :
+                      g.status === 'in_progress' ? 'bg-blue-100 text-blue-700' : 'bg-amber-100 text-amber-700'
+                    }`}>
+                      {g.status.charAt(0).toUpperCase() + g.status.slice(1).replace('_', ' ')}
+                    </span>
+                  </div>
+                ))
+              ) : (
+                <div className="p-8 text-center text-slate-500">No recent grievances found.</div>
+              )}
             </div>
           </div>
         </div>

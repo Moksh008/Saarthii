@@ -130,7 +130,7 @@ export function SignupPage() {
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <div className="flex justify-center flex-col items-center">
           <div className="bg-primary p-2 rounded text-white flex items-center justify-center mb-4">
-            <span className="material-symbols-outlined text-3xl">how_to_reg</span>
+            <span translate="no" className="material-symbols-outlined notranslate text-3xl">how_to_reg</span>
           </div>
           <h2 className="mt-2 text-center text-3xl font-black text-slate-900 tracking-tight">
             Create a Citizen Account
@@ -214,7 +214,7 @@ export function SignupPage() {
                   onClick={generateNewCode}
                   className="text-sm text-primary font-medium hover:text-primary/80 transition-colors flex items-center gap-1"
                 >
-                  <span className="material-symbols-outlined text-sm">refresh</span>
+                  <span translate="no" className="material-symbols-outlined notranslate text-sm">refresh</span>
                   Regenerate
                 </button>
               </div>

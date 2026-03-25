@@ -136,7 +136,7 @@ export function HowItWorksSection() {
                     }}
                   >
                     <span
-                      className="material-symbols-outlined text-3xl transition-colors duration-500"
+                      translate="no" className="material-symbols-outlined notranslate text-3xl transition-colors duration-500"
                       style={{ color: reached ? '#f97316' : '#64748b' }}
                     >
                       {step.icon}
@@ -209,7 +209,7 @@ export function HowItWorksSection() {
                     }}
                   >
                     <span
-                      className="material-symbols-outlined text-2xl transition-colors duration-500"
+                      translate="no" className="material-symbols-outlined notranslate text-2xl transition-colors duration-500"
                       style={{ color: reached ? '#f97316' : '#64748b' }}
                     >
                       {step.icon}

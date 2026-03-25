@@ -1,24 +1,48 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { GrievanceCard } from './shared/GrievanceCard.tsx';
 import type { GrievanceProps } from './shared/GrievanceCard.tsx';
-import { Filter, Search } from 'lucide-react';
+import { Filter, Search, Loader2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-
-const MOCK_GRIEVANCES: GrievanceProps[] = [
-  { id: 'GRV-2026-001', title: 'Streetlight completely dark near Central Park', category: 'Electrical', location: 'Sector 4, Central Park', date: '21 Mar 2026', status: 'Pending', priority: 'High', sla: '2 days' },
-  { id: 'GRV-2026-002', title: 'Garbage not collected for 3 days', category: 'Sanitation', location: 'Block B, Phase 1', date: '20 Mar 2026', status: 'Under Review', priority: 'Medium', sla: '1 day' },
-  { id: 'GRV-2026-003', title: 'Pothole on main highway intersection', category: 'Roads & Traffic', location: 'NH-8 Intersection', date: '18 Mar 2026', status: 'Resolved', priority: 'High' },
-  { id: 'GRV-2026-004', title: 'Irregular water supply timings', category: 'Water Supply', location: 'Sector 12', date: '15 Mar 2026', status: 'Resolved', priority: 'Medium' },
-];
+import { apiFetch } from '@/lib/api';
 
 export function MyGrievances() {
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState('All');
+  const [grievances, setGrievances] = useState<GrievanceProps[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const filtered = MOCK_GRIEVANCES.filter(g => {
+  useEffect(() => {
+    async function loadComplaints() {
+      try {
+        const data = await apiFetch('/complaints/my');
+        // Map backend schema to frontend expectation
+        const formatted = data.map((item: any) => ({
+          id: item._id,
+          title: item.title,
+          category: item.category || 'General',
+          location: item.location?.address || 'Not specified',
+          date: new Date(item.created_at).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }),
+          status: item.status.charAt(0).toUpperCase() + item.status.slice(1).replace('_', ' '),
+          priority: item.priority.charAt(0).toUpperCase() + item.priority.slice(1),
+          // mock sla for now as backend sla_deadline might be None or needs format
+          sla: item.sla_deadline ? new Date(item.sla_deadline).toLocaleDateString() : 'N/A',
+        }));
+        // Sort by newest first
+        formatted.sort((a: any, b: any) => new Date(b.date).getTime() - new Date(a.date).getTime());
+        setGrievances(formatted);
+      } catch (err) {
+        console.error("Failed to load complaints:", err);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+    loadComplaints();
+  }, []);
+
+  const filtered = grievances.filter(g => {
     const matchesSearch = g.title.toLowerCase().includes(searchTerm.toLowerCase()) || g.id.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesStatus = filterStatus === 'All' || g.status === filterStatus;
+    const matchesStatus = filterStatus === 'All' || g.status.toLowerCase().replace('_', ' ') === filterStatus.toLowerCase();
     return matchesSearch && matchesStatus;
   });
 
@@ -63,28 +87,35 @@ export function MyGrievances() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {filtered.length > 0 ? (
-          filtered.map(grievance => (
-            <div key={grievance.id} className="h-full">
-              <GrievanceCard 
-                grievance={grievance} 
-                onClick={(id) => navigate(`/dashboard/grievances/${id}`)}
-              />
+      {isLoading ? (
+        <div className="py-20 flex flex-col items-center justify-center space-y-4">
+          <Loader2 className="size-8 animate-spin text-primary" />
+          <p className="text-slate-500 font-medium animate-pulse">Loading your grievances...</p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {filtered.length > 0 ? (
+            filtered.map(grievance => (
+              <div key={grievance.id} className="h-full">
+                <GrievanceCard 
+                  grievance={grievance} 
+                  onClick={(id) => navigate(`/dashboard/grievances/${id}`)}
+                />
+              </div>
+            ))
+          ) : (
+            <div className="col-span-full py-12 text-center bg-white border border-slate-200 rounded-xl">
+              <p className="text-slate-500 font-medium">No grievances found matching your filters.</p>
+              <button 
+                className="mt-4 text-primary font-semibold hover:underline"
+                onClick={() => { setSearchTerm(''); setFilterStatus('All'); }}
+              >
+                Clear Filters
+              </button>
             </div>
-          ))
-        ) : (
-          <div className="col-span-full py-12 text-center bg-white border border-slate-200 rounded-xl">
-            <p className="text-slate-500 font-medium">No grievances found matching your filters.</p>
-            <button 
-              className="mt-4 text-primary font-semibold hover:underline"
-              onClick={() => { setSearchTerm(''); setFilterStatus('All'); }}
-            >
-              Clear Filters
-            </button>
-          </div>
-        )}
-      </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }

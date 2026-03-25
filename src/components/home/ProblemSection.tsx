@@ -76,7 +76,7 @@ export function ProblemSection() {
               <div className="absolute inset-0 bg-gradient-to-t from-slate-900/70 via-slate-900/40 to-slate-900/20 group-hover:from-slate-900/80 group-hover:via-slate-900/50 transition-all duration-300" />
               {/* Content */}
               <div className="relative z-10 p-8">
-                <span className="material-symbols-outlined text-white text-4xl mb-4 group-hover:scale-110 transition-transform inline-block drop-shadow-lg">{prob.icon}</span>
+                <span translate="no" className="material-symbols-outlined notranslate text-white text-4xl mb-4 group-hover:scale-110 transition-transform inline-block drop-shadow-lg">{prob.icon}</span>
                 <h3 className="text-xl font-bold mb-3 text-white drop-shadow-md">{prob.title}</h3>
                 <p className="text-white/90 text-sm leading-relaxed drop-shadow-sm">{prob.desc}</p>
               </div>

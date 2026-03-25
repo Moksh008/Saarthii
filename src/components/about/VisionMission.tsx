@@ -6,7 +6,7 @@ export function VisionMission() {
           <div className="p-10 rounded-3xl bg-slate-50 border border-slate-100 flex flex-col justify-between">
             <div>
               <div className="w-12 h-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center mb-6">
-                <span className="material-symbols-outlined text-3xl text-primary">visibility</span>
+                <span translate="no" className="material-symbols-outlined notranslate text-3xl text-primary">visibility</span>
               </div>
               <h2 className="text-3xl font-bold text-slate-900 mb-6">Our Vision</h2>
               <p className="text-lg text-slate-600 leading-relaxed">
@@ -22,7 +22,7 @@ export function VisionMission() {
           <div className="p-10 rounded-3xl bg-slate-50 border border-slate-100 flex flex-col justify-between">
             <div>
               <div className="w-12 h-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center mb-6">
-                <span className="material-symbols-outlined text-3xl text-primary">task_alt</span>
+                <span translate="no" className="material-symbols-outlined notranslate text-3xl text-primary">task_alt</span>
               </div>
               <h2 className="text-3xl font-bold text-slate-900 mb-6">Our Mission</h2>
               <p className="text-lg text-slate-600 leading-relaxed">

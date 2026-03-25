@@ -175,7 +175,7 @@ export function HeroSection() {
           <div>
             <button className="bg-white text-slate-900 px-8 py-4 rounded-full font-bold text-lg transition-all hover:bg-slate-50 hover:shadow-lg flex items-center gap-2 group">
               Book a Call 
-              <span className="material-symbols-outlined transition-transform group-hover:translate-x-1">arrow_forward</span>
+              <span translate="no" className="material-symbols-outlined notranslate transition-transform group-hover:translate-x-1">arrow_forward</span>
             </button>
           </div>
         </div>

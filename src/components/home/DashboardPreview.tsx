@@ -116,7 +116,7 @@ export function DashboardPreview() {
                 }}
               >
                 <h4 className="text-xl font-bold mb-2 flex items-center gap-3">
-                  <span className="material-symbols-outlined text-primary">admin_panel_settings</span>
+                  <span translate="no" className="material-symbols-outlined notranslate text-primary">admin_panel_settings</span>
                   Executive Command Center
                 </h4>
                 <p className="text-slate-600">Administrators get a high-level overview of department performance, budget health, and task completion rates.</p>
@@ -131,7 +131,7 @@ export function DashboardPreview() {
                 }}
               >
                 <h4 className="text-xl font-bold mb-2 flex items-center gap-3">
-                  <span className="material-symbols-outlined text-primary">public</span>
+                  <span translate="no" className="material-symbols-outlined notranslate text-primary">public</span>
                   Public Transparency Portal
                 </h4>
                 <p className="text-slate-600">Citizens can track the progress of community projects, scheme disbursements, and local government spending in real-time.</p>

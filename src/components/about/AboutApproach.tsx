@@ -33,15 +33,15 @@ export function AboutApproach() {
             </p>
             <div className="space-y-4">
               <div className="flex items-center gap-3 text-red-400">
-                <span className="material-symbols-outlined">error</span>
+                <span translate="no" className="material-symbols-outlined notranslate">error</span>
                 <span>Siloed information across departments</span>
               </div>
               <div className="flex items-center gap-3 text-red-400">
-                <span className="material-symbols-outlined">error</span>
+                <span translate="no" className="material-symbols-outlined notranslate">error</span>
                 <span>Manual processes prone to human error</span>
               </div>
               <div className="flex items-center gap-3 text-red-400">
-                <span className="material-symbols-outlined">error</span>
+                <span translate="no" className="material-symbols-outlined notranslate">error</span>
                 <span>Limited citizen feedback mechanisms</span>
               </div>
             </div>
@@ -50,7 +50,7 @@ export function AboutApproach() {
           <div className="lg:w-1/2 grid grid-cols-2 gap-6">
             {approaches.map((ap, idx) => (
               <div key={idx} className="p-6 rounded-2xl bg-white/5 border border-white/10 transition-colors hover:bg-white/10">
-                <span className="material-symbols-outlined text-primary mb-4 text-3xl">{ap.icon}</span>
+                <span translate="no" className="material-symbols-outlined notranslate text-primary mb-4 text-3xl">{ap.icon}</span>
                 <h4 className="font-bold mb-2">{ap.title}</h4>
                 <p className="text-slate-400 text-sm leading-relaxed">{ap.desc}</p>
               </div>

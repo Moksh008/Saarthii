@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { MapPin, AlertCircle, Bot } from 'lucide-react';
 import { AIInsightPanel } from './shared/AIInsightPanel';
 import { SimilarComplaintsList } from './shared/SimilarComplaintsList';
+import { apiFetch } from '@/lib/api';
 
 export function NewGrievance() {
   const navigate = useNavigate();
@@ -14,6 +15,8 @@ export function NewGrievance() {
   
   const [isTyping, setIsTyping] = useState(false);
   const [showAI, setShowAI] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [errorParam, setErrorParam] = useState('');
 
   // Simulated AI analysis based on typing
   useEffect(() => {
@@ -42,20 +45,48 @@ export function NewGrievance() {
             {/* AI Banner indicator */}
             <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-400 via-primary to-purple-500 opacity-50"></div>
             
+            {errorParam && (
+              <div className="bg-red-50 text-red-600 p-4 rounded-lg mb-6 border border-red-200">
+                {errorParam}
+              </div>
+            )}
+
             <form className="space-y-6" onSubmit={async (e) => {
                 e.preventDefault();
-                // Upload files first
-                const uploadedUrls: string[] = []
-                for (const f of files) {
-                  const fd = new FormData()
-                  fd.append('file', f)
-                  const res = await fetch((import.meta.env.VITE_API_BASE || '') + '/uploads/', { method: 'POST', body: fd, credentials: 'include' })
-                  const data = await res.json()
-                  if (res.ok && data.url) uploadedUrls.push(data.url)
-                }
+                setIsSubmitting(true);
+                setErrorParam('');
+                try {
+                  // Upload files first
+                  const uploadedUrls: string[] = []
+                  for (const f of files) {
+                    const fd = new FormData()
+                    fd.append('file', f)
+                    const res = await fetch((import.meta.env.VITE_API_BASE || '') + '/uploads/', { method: 'POST', body: fd, credentials: 'include' })
+                    const data = await res.json()
+                    if (res.ok && data.url) uploadedUrls.push(data.url)
+                  }
 
-                alert('Form submitted via API (mock). Uploaded: ' + uploadedUrls.join(', '))
-                navigate('/dashboard/my-grievances');
+                  // Submit actual complaint
+                  await apiFetch('/complaints/', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                      title,
+                      description,
+                      address: location || 'Not Specified',
+                      city: 'Delhi',
+                      state: 'Delhi',
+                      pincode: '110001',
+                      images: uploadedUrls
+                    })
+                  });
+
+                  navigate('/dashboard/my-grievances');
+                } catch (err: any) {
+                  console.error('Failed to submit grievance', err);
+                  setErrorParam(err.message || 'Failed to submit grievance. Please try again.');
+                } finally {
+                  setIsSubmitting(false);
+                }
               }}>
               <div>
                 <label className="block text-sm font-semibold text-slate-900 mb-2">Complaint Title</label>
@@ -125,9 +156,10 @@ export function NewGrievance() {
                 </div>
                 <button 
                   type="submit"
-                  className="bg-primary text-white font-semibold py-3 px-8 rounded-lg hover:bg-primary/90 transition-all shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
+                  disabled={isSubmitting}
+                  className="bg-primary text-white font-semibold py-3 px-8 rounded-lg hover:bg-primary/90 transition-all shadow-md hover:shadow-lg transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
                 >
-                  Submit Grievance
+                  {isSubmitting ? 'Submitting...' : 'Submit Grievance'}
                 </button>
               </div>
             </form>

@@ -55,6 +55,7 @@ interface Navbar1Props {
       url: string;
     };
   };
+  customRightElement?: React.ReactNode;
 }
 
 const Navbar1 = ({
@@ -146,6 +147,7 @@ const Navbar1 = ({
     login: { text: "Log in", url: "#" },
     signup: { text: "Sign up", url: "#" },
   },
+  customRightElement,
 }: Navbar1Props) => {
   return (
     <section className="py-3 sm:py-4">
@@ -164,7 +166,8 @@ const Navbar1 = ({
               </NavigationMenu>
             </div>
           </div>
-          <div className="flex gap-2">
+          <div className="flex items-center gap-2">
+            {customRightElement}
             <Button asChild variant="outline" size="sm">
               <a href={auth.login.url}>{auth.login.text}</a>
             </Button>
@@ -218,6 +221,7 @@ const Navbar1 = ({
                     </div>
                   </div>
                   <div className="flex flex-col gap-3">
+                    {customRightElement}
                     <Button asChild variant="outline">
                       <a href={auth.login.url}>{auth.login.text}</a>
                     </Button>

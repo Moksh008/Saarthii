@@ -34,7 +34,7 @@ export function AboutTeam() {
           {team.map((member, idx) => (
             <div key={idx} className="bg-white p-6 rounded-3xl shadow-sm border border-slate-100 transition-all hover:shadow-xl group">
               <div className="w-full aspect-square bg-slate-100 rounded-2xl mb-6 overflow-hidden flex items-center justify-center">
-                <span className="material-symbols-outlined text-slate-300 text-6xl group-hover:scale-110 transition-transform">person</span>
+                <span translate="no" className="material-symbols-outlined notranslate text-slate-300 text-6xl group-hover:scale-110 transition-transform">person</span>
               </div>
               <h3 className="text-xl font-bold text-slate-900 mb-1">{member.name}</h3>
               <div className="text-primary font-bold text-sm mb-4 uppercase tracking-widest">{member.role}</div>

@@ -64,7 +64,7 @@ export function Navbar() {
   const logoElement = (
     <Link to="/" className="flex items-center gap-2">
       <div className="bg-[#ec5b13] p-1 rounded text-white flex items-center justify-center shadow-sm">
-        <span className="material-symbols-outlined text-lg">account_balance</span>
+        <span translate="no" className="material-symbols-outlined notranslate text-lg">account_balance</span>
       </div>
       <span className="text-slate-900 font-bold tracking-tight text-sm">Saarthii</span>
     </Link>

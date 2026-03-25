@@ -279,7 +279,7 @@ export function FeaturesSection() {
                       border: `1.5px solid ${feature.accent}40`,
                     }}
                   >
-                    <span className="material-symbols-outlined text-2xl" style={{ color: feature.accent }}>
+                    <span translate="no" className="material-symbols-outlined notranslate text-2xl" style={{ color: feature.accent }}>
                       {feature.icon}
                     </span>
                   </div>

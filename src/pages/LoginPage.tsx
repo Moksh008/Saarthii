@@ -357,12 +357,17 @@ export function LoginPage() {
     
     try {
       if (activeTab === 'citizen') {
-        // 1. Backend session (Backend handles Firebase verification + DB lookup)
-        const userData = await apiFetch('/auth/login', { 
-          method: 'POST', 
-          body: JSON.stringify({ email, password }) 
+        // Firebase email/password sign-in, then set backend session cookie
+        const { auth: firebaseAuth } = await import('@/lib/firebase');
+        const { signInWithEmailAndPassword } = await import('firebase/auth');
+        const cred = await signInWithEmailAndPassword(firebaseAuth, email, password);
+        const idToken = await cred.user.getIdToken();
+
+        const userData = await apiFetch('/auth/firebase-login', {
+          method: 'POST',
+          body: JSON.stringify({ idToken })
         });
-        
+
         login(userData);
         handleRedirect(userData.role);
       } else {

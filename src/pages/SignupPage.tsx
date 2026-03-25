@@ -51,52 +51,67 @@ export function SignupPage() {
     setIsLoading(true);
 
     try {
-      // 1. Create user in backend (Backend handles Firebase + MongoDB)
-      const signupRequest: any = {
-        user_data: {
-          name: name,
-          email: email,
-          phone: phone,
-          role: 'citizen',
-          address: address,
-          city: city,
-          state: state,
-          pincode: pincode
-        }
-      };
+      let firebaseUid: string;
+      let idToken: string;
 
       if (googleState?.idToken) {
-        signupRequest.id_token = googleState.idToken;
+        // Google sign-in already done — extract UID from the existing token
+        const { auth: firebaseAuth } = await import('@/lib/firebase');
+        const currentUser = firebaseAuth.currentUser;
+        if (!currentUser) throw new Error('Google session expired. Please try again.');
+        firebaseUid = currentUser.uid;
+        idToken = googleState.idToken;
       } else {
-        signupRequest.password = password;
+        // Email/password signup: create Firebase user first
+        const { auth: firebaseAuth } = await import('@/lib/firebase');
+        const { createUserWithEmailAndPassword, signInWithEmailAndPassword } = await import('firebase/auth');
+        try {
+          const cred = await createUserWithEmailAndPassword(firebaseAuth, email, password);
+          firebaseUid = cred.user.uid;
+          idToken = await cred.user.getIdToken();
+        } catch (fbErr: any) {
+          if (fbErr.code === 'auth/email-already-in-use') {
+            // Firebase user exists — sign in to get the UID, then try backend signup
+            const cred = await signInWithEmailAndPassword(firebaseAuth, email, password);
+            firebaseUid = cred.user.uid;
+            idToken = await cred.user.getIdToken();
+          } else {
+            throw fbErr;
+          }
+        }
       }
+
+      // Call backend /auth/signup with flat UserCreate payload
+      const signupPayload = {
+        firebase_uid: firebaseUid,
+        name,
+        email,
+        phone,
+        role: 'citizen',
+        address,
+        city,
+        state,
+        pincode,
+      };
 
       try {
         await apiFetch('/auth/signup', {
           method: 'POST',
-          body: JSON.stringify(signupRequest)
+          body: JSON.stringify(signupPayload),
         });
-        
-        // 2. Automatically log in after signup
-        let loginData;
-        if (googleState?.idToken) {
-          loginData = await apiFetch('/auth/firebase-login', {
-            method: 'POST',
-            body: JSON.stringify({ idToken: googleState.idToken })
-          });
-        } else {
-          loginData = await apiFetch('/auth/login', {
-            method: 'POST',
-            body: JSON.stringify({ email, password })
-          });
-        }
+
+        // Auto-login: call firebase-login to set session cookie
+        const loginData = await apiFetch('/auth/firebase-login', {
+          method: 'POST',
+          body: JSON.stringify({ idToken }),
+        });
 
         login(loginData);
-        alert("Account created and you are now logged in!");
+        alert('Account created and you are now logged in!');
         navigate('/dashboard');
       } catch (apiErr: any) {
-        if (apiErr.status === 400 || apiErr.message?.includes("already exists")) {
-          alert("This account is already registered. Redirecting to login...");
+        if (apiErr.status === 400 || apiErr.message?.includes('already exists')) {
+          alert('This account is already registered. Redirecting to login...');
           navigate('/login');
         } else {
           throw apiErr;

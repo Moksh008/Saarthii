@@ -51,39 +51,8 @@ export function SignupPage() {
     setIsLoading(true);
 
     try {
-      let firebaseUid: string;
-      let idToken: string;
-
-      if (googleState?.idToken) {
-        // Google sign-in already done — extract UID from the existing token
-        const { auth: firebaseAuth } = await import('@/lib/firebase');
-        const currentUser = firebaseAuth.currentUser;
-        if (!currentUser) throw new Error('Google session expired. Please try again.');
-        firebaseUid = currentUser.uid;
-        idToken = googleState.idToken;
-      } else {
-        // Email/password signup: create Firebase user first
-        const { auth: firebaseAuth } = await import('@/lib/firebase');
-        const { createUserWithEmailAndPassword, signInWithEmailAndPassword } = await import('firebase/auth');
-        try {
-          const cred = await createUserWithEmailAndPassword(firebaseAuth, email, password);
-          firebaseUid = cred.user.uid;
-          idToken = await cred.user.getIdToken();
-        } catch (fbErr: any) {
-          if (fbErr.code === 'auth/email-already-in-use') {
-            // Firebase user exists — sign in to get the UID, then try backend signup
-            const cred = await signInWithEmailAndPassword(firebaseAuth, email, password);
-            firebaseUid = cred.user.uid;
-            idToken = await cred.user.getIdToken();
-          } else {
-            throw fbErr;
-          }
-        }
-      }
-
-      // Call backend /auth/signup with flat UserCreate payload
-      const signupPayload = {
-        firebase_uid: firebaseUid,
+      // Build the payload the backend expects: { user_data: {...}, password?, id_token? }
+      const userData = {
         name,
         email,
         phone,
@@ -94,19 +63,45 @@ export function SignupPage() {
         pincode,
       };
 
+      let signupPayload: any;
+
+      if (googleState?.idToken) {
+        // Google sign-in: pass the id_token so the backend verifies it
+        signupPayload = {
+          user_data: userData,
+          id_token: googleState.idToken,
+        };
+      } else {
+        // Email/password signup: let the backend create the Firebase user
+        signupPayload = {
+          user_data: userData,
+          password,
+        };
+      }
+
       try {
         await apiFetch('/auth/signup', {
           method: 'POST',
           body: JSON.stringify(signupPayload),
         });
 
-        // Auto-login: call firebase-login to set session cookie
-        const loginData = await apiFetch('/auth/firebase-login', {
-          method: 'POST',
-          body: JSON.stringify({ idToken }),
-        });
+        // Auto-login after successful signup
+        if (googleState?.idToken) {
+          // For Google sign-in: use firebase-login with the existing token
+          const loginData = await apiFetch('/auth/firebase-login', {
+            method: 'POST',
+            body: JSON.stringify({ idToken: googleState.idToken }),
+          });
+          login(loginData);
+        } else {
+          // For email/password: use the /auth/login endpoint
+          const loginData = await apiFetch('/auth/login', {
+            method: 'POST',
+            body: JSON.stringify({ email, password }),
+          });
+          login(loginData);
+        }
 
-        login(loginData);
         alert('Account created and you are now logged in!');
         navigate('/dashboard');
       } catch (apiErr: any) {

@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { MapPin, AlertCircle, Bot } from 'lucide-react';
-import { AIInsightPanel } from './shared/AIInsightPanel';
-import { SimilarComplaintsList } from './shared/SimilarComplaintsList';
+import { AIAssistantChat } from './shared/AIAssistantChat';
 import { apiFetch } from '@/lib/api';
 
 export function NewGrievance() {
@@ -10,27 +9,51 @@ export function NewGrievance() {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [location, setLocation] = useState('');
+  const [city, setCity] = useState('');
+  const [state, setState] = useState('');
+  const [pincode, setPincode] = useState('');
   const [files, setFiles] = useState<File[]>([])
   const [previews, setPreviews] = useState<string[]>([])
-  
+
   const [isTyping, setIsTyping] = useState(false);
-  const [showAI, setShowAI] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorParam, setErrorParam] = useState('');
+  const [formAutoFilled, setFormAutoFilled] = useState(false);
 
-  // Simulated AI analysis based on typing
+  // AI typing indicator when user manually types
   useEffect(() => {
     if (title.length > 5 || description.length > 10) {
       setIsTyping(true);
-      const timer = setTimeout(() => {
-        setIsTyping(false);
-        setShowAI(true);
-      }, 800);
+      const timer = setTimeout(() => setIsTyping(false), 800);
       return () => clearTimeout(timer);
-    } else {
-      setShowAI(false);
     }
   }, [title, description]);
+
+  // Handler for AI auto-fill
+  function handleFormFill(data: {
+    title: string;
+    description: string;
+    address: string;
+    city: string;
+    state: string;
+    pincode: string;
+  }) {
+    setTitle(data.title || '');
+    setDescription(data.description || '');
+    setLocation(data.address || '');
+    setCity(data.city || '');
+    setState(data.state || '');
+    setPincode(data.pincode || '');
+    setFormAutoFilled(true);
+
+    // Scroll to form top after fill
+    setTimeout(() => {
+      document.getElementById('complaint-form-card')?.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start',
+      });
+    }, 300);
+  }
 
   return (
     <div className="max-w-6xl mx-auto pb-12">
@@ -41,9 +64,23 @@ export function NewGrievance() {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2 space-y-6">
-          <div className="bg-white p-8 rounded-xl border border-slate-200 shadow-sm relative overflow-hidden">
+          <div
+            id="complaint-form-card"
+            className={`bg-white p-8 rounded-xl border shadow-sm relative overflow-hidden transition-all duration-500 ${
+              formAutoFilled
+                ? 'border-emerald-300 ring-2 ring-emerald-100'
+                : 'border-slate-200'
+            }`}
+          >
             {/* AI Banner indicator */}
             <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-400 via-primary to-purple-500 opacity-50"></div>
+
+            {formAutoFilled && (
+              <div className="bg-emerald-50 text-emerald-700 p-3 rounded-lg mb-6 border border-emerald-200 flex items-center gap-2 text-sm font-medium animate-slide-up">
+                <span className="text-lg">✨</span>
+                Form auto-filled by Saarthii AI — review the details and submit!
+              </div>
+            )}
             
             {errorParam && (
               <div className="bg-red-50 text-red-600 p-4 rounded-lg mb-6 border border-red-200">
@@ -73,9 +110,9 @@ export function NewGrievance() {
                       title,
                       description,
                       address: location || 'Not Specified',
-                      city: 'Delhi',
-                      state: 'Delhi',
-                      pincode: '110001',
+                      city: city || 'Delhi',
+                      state: state || 'Delhi',
+                      pincode: pincode || '110001',
                       images: uploadedUrls
                     })
                   });
@@ -118,16 +155,49 @@ export function NewGrievance() {
                 />
               </div>
 
-              <div>
-                <label className="block text-sm font-semibold text-slate-900 mb-2">Location (Optional)</label>
-                <div className="relative flex items-center">
-                  <MapPin className="absolute left-3 text-slate-400 size-5" />
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-semibold text-slate-900 mb-2">Location / Address</label>
+                  <div className="relative flex items-center">
+                    <MapPin className="absolute left-3 text-slate-400 size-5" />
+                    <input 
+                      type="text" 
+                      value={location}
+                      onChange={(e) => setLocation(e.target.value)}
+                      placeholder="Street address..."
+                      className="w-full pl-10 pr-4 py-3 rounded-lg border border-slate-200 outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all text-slate-900"
+                    />
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-slate-900 mb-2">City</label>
                   <input 
                     type="text" 
-                    value={location}
-                    onChange={(e) => setLocation(e.target.value)}
-                    placeholder="Search for an exact map location..."
-                    className="w-full pl-10 pr-4 py-3 rounded-lg border border-slate-200 outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all text-slate-900"
+                    value={city}
+                    onChange={(e) => setCity(e.target.value)}
+                    placeholder="City name..."
+                    className="w-full px-4 py-3 rounded-lg border border-slate-200 outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all text-slate-900"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-slate-900 mb-2">State</label>
+                  <input 
+                    type="text" 
+                    value={state}
+                    onChange={(e) => setState(e.target.value)}
+                    placeholder="State name..."
+                    className="w-full px-4 py-3 rounded-lg border border-slate-200 outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all text-slate-900"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-slate-900 mb-2">Pincode</label>
+                  <input 
+                    type="text" 
+                    value={pincode}
+                    onChange={(e) => setPincode(e.target.value)}
+                    placeholder="6-digit pincode..."
+                    maxLength={6}
+                    className="w-full px-4 py-3 rounded-lg border border-slate-200 outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all text-slate-900"
                   />
                 </div>
               </div>
@@ -166,30 +236,11 @@ export function NewGrievance() {
           </div>
         </div>
 
-        {/* AI Sidebar */}
-        <div className="lg:col-span-1 space-y-6">
-          <div className={`transition-all duration-500 ${showAI ? 'opacity-100 translate-y-0' : 'opacity-50 translate-y-4 pointer-events-none blur-[2px]'}`}>
-            <AIInsightPanel 
-              category={title.toLowerCase().includes('water') ? 'Water Supply' : title.toLowerCase().includes('light') ? 'Electrical' : 'General Maintenance'}
-              priority={description.length > 50 ? 'High' : 'Medium'}
-              confidence={87}
-              sla={title.toLowerCase().includes('water') ? '24 Hours' : '3 Days'}
-            />
+        {/* AI Assistant Sidebar */}
+        <div className="lg:col-span-1">
+          <div className="sticky top-6">
+            <AIAssistantChat onFormFill={handleFormFill} />
           </div>
-
-          <div className={`transition-all duration-500 delay-150 ${showAI ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4 pointer-events-none'}`}>
-            <SimilarComplaintsList />
-          </div>
-
-          {!showAI && (
-            <div className="bg-slate-50 border border-slate-200 rounded-xl p-6 text-center shadow-sm">
-              <div className="mx-auto size-12 rounded-full bg-slate-200 flex items-center justify-center mb-4">
-                <Bot className="size-6 text-slate-400" />
-              </div>
-              <h3 className="font-semibold text-slate-900">Waiting for input</h3>
-              <p className="text-xs text-slate-500 mt-2">Start typing a title and description for Saarthii AI to automatically generate insights and locate similarities.</p>
-            </div>
-          )}
         </div>
       </div>
     </div>

@@ -5,6 +5,8 @@ import { StatusBadge } from './shared/StatusBadge';
 import { PriorityBadge } from './shared/PriorityBadge';
 import { TimelineComponent } from './shared/TimelineComponent';
 import { AIInsightPanel } from './shared/AIInsightPanel';
+import { FeedbackCard } from './shared/FeedbackCard';
+import { AIProblemDescription } from './shared/AIProblemDescription';
 import { apiFetch } from '@/lib/api';
 
 export function GrievanceDetail() {
@@ -99,45 +101,75 @@ export function GrievanceDetail() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Left Column - Details & Timeline */}
         <div className="lg:col-span-2 space-y-8">
-          <div className="bg-white p-8 rounded-xl border border-slate-200 shadow-sm">
-            <h2 className="text-lg font-bold text-slate-900 mb-4">Description</h2>
-            <p className="text-slate-600 leading-relaxed whitespace-pre-wrap">
-              {complaint.description}
-            </p>
-            
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 mt-8 pt-6 border-t border-slate-100">
-              <div>
-                <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Category</p>
-                <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-primary/10 text-primary">
-                  {complaint.category || 'General'}
-                </span>
-              </div>
-              <div>
-                <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Location</p>
-                <div className="flex items-center gap-1 text-sm font-medium text-slate-900 line-clamp-2" title={complaint.location?.address}>
-                  <MapPin size={14} className="text-slate-400 shrink-0" /> <span className="truncate">{complaint.location?.address || 'Not specified'}</span>
-                </div>
-              </div>
-              <div>
-                <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Submitted</p>
-                <div className="flex items-center gap-1 text-sm font-medium text-slate-900">
-                  <Calendar size={14} className="text-slate-400" /> {new Date(complaint.created_at).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}
-                </div>
-              </div>
-              <div>
-                <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Predicted SLA</p>
-                <div className="flex items-center gap-1 text-sm font-medium text-primary">
-                  <Clock size={14} /> {complaint.sla_deadline ? new Date(complaint.sla_deadline).toLocaleDateString() : 'N/A'}
+          <div className="rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+            {/* Description section */}
+            <div className="bg-white p-8 pb-5">
+              <h2 className="text-lg font-bold text-slate-900 mb-4">Description</h2>
+              <p className="text-slate-600 leading-relaxed whitespace-pre-wrap">
+                {complaint.description}
+              </p>
+            </div>
+
+            {/* Map + Overlaid details */}
+            <div className="relative h-[280px]">
+              {/* Map iframe background */}
+              <iframe
+                title="Complaint Location Map"
+                className="absolute inset-0 w-full h-full border-0"
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                src={`https://maps.google.com/maps?q=${encodeURIComponent(
+                  [complaint.location?.address, complaint.location?.city, complaint.location?.state, complaint.location?.pincode]
+                    .filter(Boolean).join(', ')
+                )}&t=&z=14&ie=UTF8&iwloc=&output=embed`}
+              />
+
+              {/* Gradient overlay for readability */}
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-slate-900/40 to-transparent pointer-events-none" />
+
+              {/* Detail cards overlaid at bottom */}
+              <div className="absolute bottom-0 left-0 right-0 p-5">
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                  <div className="backdrop-blur-md bg-white/15 rounded-lg p-3 border border-white/20">
+                    <p className="text-[10px] font-semibold text-white/60 uppercase tracking-wider mb-1">Category</p>
+                    <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-white/20 text-white">
+                      {complaint.category || 'General'}
+                    </span>
+                  </div>
+                  <div className="backdrop-blur-md bg-white/15 rounded-lg p-3 border border-white/20">
+                    <p className="text-[10px] font-semibold text-white/60 uppercase tracking-wider mb-1">Location</p>
+                    <div className="flex items-center gap-1 text-xs font-medium text-white line-clamp-2" title={complaint.location?.address}>
+                      <MapPin size={12} className="text-white/70 shrink-0" />
+                      <span className="truncate">{complaint.location?.address || 'Not specified'}</span>
+                    </div>
+                  </div>
+                  <div className="backdrop-blur-md bg-white/15 rounded-lg p-3 border border-white/20">
+                    <p className="text-[10px] font-semibold text-white/60 uppercase tracking-wider mb-1">Submitted</p>
+                    <div className="flex items-center gap-1 text-xs font-medium text-white">
+                      <Calendar size={12} className="text-white/70" /> {new Date(complaint.created_at).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}
+                    </div>
+                  </div>
+                  <div className="backdrop-blur-md bg-white/15 rounded-lg p-3 border border-white/20">
+                    <p className="text-[10px] font-semibold text-white/60 uppercase tracking-wider mb-1">Predicted SLA</p>
+                    <div className="flex items-center gap-1 text-xs font-medium text-amber-300">
+                      <Clock size={12} /> {complaint.sla_deadline ? new Date(complaint.sla_deadline).toLocaleDateString() : 'N/A'}
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
 
+          <AIProblemDescription complaintId={complaint._id} />
+
           <div className="bg-white p-8 rounded-xl border border-slate-200 shadow-sm">
             <h2 className="text-lg font-bold text-slate-900 mb-2">Resolution Timeline</h2>
             <p className="text-sm text-slate-500 mb-6">Track the progress of your grievance via automated updates.</p>
-            {/* TODO: Pass actual status changes to timeline */}
-            <TimelineComponent />
+            <TimelineComponent
+              status={complaint.status}
+              createdAt={complaint.created_at}
+              notes={complaint.notes}
+            />
           </div>
         </div>
 
@@ -165,6 +197,10 @@ export function GrievanceDetail() {
                </div>
              )}
           </div>
+           <FeedbackCard
+             complaintId={complaint._id}
+             existingFeedback={complaint.feedback}
+           />
         </div>
       </div>
     </div>

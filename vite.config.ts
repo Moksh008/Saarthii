@@ -23,7 +23,19 @@ export default defineConfig({
         target: 'http://localhost:8000',
         changeOrigin: true,
       },
-      '/dashboard': {
+      '/dashboard/citizen': {
+        target: 'http://localhost:8000',
+        changeOrigin: true,
+      },
+      '/dashboard/officer': {
+        target: 'http://localhost:8000',
+        changeOrigin: true,
+      },
+      '/dashboard/region': {
+        target: 'http://localhost:8000',
+        changeOrigin: true,
+      },
+      '/dashboard/admin': {
         target: 'http://localhost:8000',
         changeOrigin: true,
       },

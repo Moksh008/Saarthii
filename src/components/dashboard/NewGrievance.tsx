@@ -20,6 +20,27 @@ export function NewGrievance() {
   const [errorParam, setErrorParam] = useState('');
   const [formAutoFilled, setFormAutoFilled] = useState(false);
 
+  async function getCurrentCoordinates(): Promise<{ lat: number; lng: number } | null> {
+    if (!navigator.geolocation) return null;
+
+    return new Promise((resolve) => {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          resolve({
+            lat: position.coords.latitude,
+            lng: position.coords.longitude,
+          });
+        },
+        () => resolve(null),
+        {
+          enableHighAccuracy: false,
+          timeout: 5000,
+          maximumAge: 300000,
+        }
+      );
+    });
+  }
+
   // AI typing indicator when user manually types
   useEffect(() => {
     if (title.length > 5 || description.length > 10) {
@@ -93,6 +114,8 @@ export function NewGrievance() {
                 setIsSubmitting(true);
                 setErrorParam('');
                 try {
+                  const coords = await getCurrentCoordinates();
+
                   // Upload files first
                   const uploadedUrls: string[] = []
                   for (const f of files) {
@@ -113,6 +136,8 @@ export function NewGrievance() {
                       city: city || 'Delhi',
                       state: state || 'Delhi',
                       pincode: pincode || '110001',
+                      lat: coords?.lat ?? null,
+                      lng: coords?.lng ?? null,
                       images: uploadedUrls
                     })
                   });

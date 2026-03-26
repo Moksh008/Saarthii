@@ -1,14 +1,14 @@
 import { useState } from "react";
 import { Sidebar, SidebarBody, SidebarLink } from "./ui/sidebar";
-import { 
-  LayoutDashboard, 
-  FileText, 
-  History, 
-  Settings, 
-  LogOut, 
-  User, 
-  BarChart3, 
-  Map as MapIcon, 
+import {
+  LayoutDashboard,
+  FileText,
+  History,
+  Settings,
+  LogOut,
+  User,
+  BarChart3,
+  Map as MapIcon,
   AlertTriangle,
   ClipboardList,
   PlusCircle,
@@ -23,7 +23,7 @@ export function DashboardSidebar() {
 
   const getLinks = () => {
     const role = user?.role;
-    
+
     const commonLinks = [
       {
         label: "Settings",
@@ -81,6 +81,11 @@ export function DashboardSidebar() {
           href: "/gov-dashboard/analytics",
           icon: <BarChart3 className="text-neutral-700 h-5 w-5" />,
         },
+        {
+          label: "City Heat Map",
+          href: "/gov-dashboard/heatmaps",
+          icon: <MapIcon className="text-neutral-700 h-5 w-5 flex-shrink-0" />,
+        },
         ...commonLinks
       ];
     }
@@ -101,6 +106,11 @@ export function DashboardSidebar() {
           label: "Activity Logs",
           href: "/gov-dashboard/logs",
           icon: <History className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />,
+        },
+        {
+          label: "Local Heat Map",
+          href: "/gov-dashboard/heatmaps",
+          icon: <MapIcon className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />,
         },
         ...commonLinks
       ];
@@ -133,6 +143,11 @@ export function DashboardSidebar() {
         href: "/dashboard/activity-logs",
         icon: <History className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />,
       },
+      {
+        label: "Heat Map",
+        href: "/dashboard/map",
+        icon: <MapIcon className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />,
+      },
       ...commonLinks
     ];
   };
@@ -162,7 +177,7 @@ export function DashboardSidebar() {
               ),
             }}
           />
-          <button 
+          <button
             onClick={logout}
             className="flex items-center justify-start gap-2 group/sidebar py-2 w-full text-left"
           >

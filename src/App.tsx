@@ -18,6 +18,7 @@ const ActivityLogs = React.lazy(() => import('./components/dashboard/ActivityLog
 const EditProfile = React.lazy(() => import('./components/dashboard/EditProfile').then(m => ({ default: m.EditProfile })))
 const ChangePassword = React.lazy(() => import('./components/dashboard/ChangePassword').then(m => ({ default: m.ChangePassword })))
 const GrievanceDetail = React.lazy(() => import('./components/dashboard/GrievanceDetail').then(m => ({ default: m.GrievanceDetail })))
+const FeedbackPage = React.lazy(() => import('./components/dashboard/FeedbackPage').then(m => ({ default: m.FeedbackPage })))
 const GrievanceMap = React.lazy(() => import('./components/dashboard/GrievanceMap').then(m => ({ default: m.GrievanceMap })))
 const GovDashboard = React.lazy(() => import('./pages/GovDashboard').then(m => ({ default: m.GovDashboard })))
 const OfficerOverview = React.lazy(() => import('./components/dashboard/OfficerOverview').then(m => ({ default: m.OfficerOverview })))
@@ -61,6 +62,7 @@ function AppContent() {
             <Route path="my-grievances" element={<Suspense fallback={<div>Loading grievances...</div>}><MyGrievances /></Suspense>} />
             <Route path="grievances/:id" element={<Suspense fallback={<div>Loading...</div>}><GrievanceDetail /></Suspense>} />
             <Route path="new-grievance" element={<Suspense fallback={<div>Loading form...</div>}><NewGrievance /></Suspense>} />
+            <Route path="feedback" element={<Suspense fallback={<div>Loading feedback...</div>}><FeedbackPage /></Suspense>} />
             <Route path="my-appeals" element={<Suspense fallback={<div>Loading appeals...</div>}><MyAppeals /></Suspense>} />
             <Route path="activity-logs" element={<Suspense fallback={<div>Loading...</div>}><ActivityLogs /></Suspense>} />
             <Route path="edit-profile" element={<Suspense fallback={<div>Loading...</div>}><EditProfile /></Suspense>} />

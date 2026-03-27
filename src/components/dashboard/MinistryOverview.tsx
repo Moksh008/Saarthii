@@ -55,7 +55,7 @@ export function MinistryOverview() {
               <option>Last 6 Months</option>
             </select>
           </div>
-          
+
           <div className="space-y-6">
             {[
               { dept: "Public Works (PWD)", resolved: 85, total: 120, color: "bg-blue-500" },
@@ -70,7 +70,7 @@ export function MinistryOverview() {
                   <span className="text-[10px] font-bold text-slate-400">{item.resolved}/{item.total} Resolved</span>
                 </div>
                 <div className="h-2 w-full bg-slate-100 rounded-full overflow-hidden">
-                  <div className={`h-full ${item.color}`} style={{ width: `${(item.resolved/item.total)*100}%` }}></div>
+                  <div className={`h-full ${item.color}`} style={{ width: `${(item.resolved / item.total) * 100}%` }}></div>
                 </div>
               </div>
             ))}
@@ -109,52 +109,52 @@ export function MinistryOverview() {
 
       {/* Crisis Alerts & Recent Trends */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-         <div className="bg-rose-50 border border-rose-100 p-6 rounded-2xl">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="size-10 bg-rose-600 rounded-lg flex items-center justify-center text-white">
-                <AlertTriangle size={20} />
-              </div>
-              <div>
-                <h4 className="font-bold text-rose-950">Crisis Alerts</h4>
-                <p className="text-xs text-rose-700">Immediate attention required in these areas</p>
-              </div>
+        <div className="bg-rose-50 border border-rose-100 p-6 rounded-2xl">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="size-10 bg-rose-600 rounded-lg flex items-center justify-center text-white">
+              <AlertTriangle size={20} />
             </div>
-            <div className="space-y-3">
-              <div className="p-4 bg-white border border-rose-200 rounded-xl flex justify-between items-center">
-                <p className="text-sm font-bold text-slate-900">Flood Warning - Sector 9</p>
-                <span className="px-2 py-1 bg-rose-100 text-rose-700 rounded text-[10px] font-bold">CRITICAL</span>
-              </div>
-              <div className="p-4 bg-white border border-rose-200 rounded-xl flex justify-between items-center shadow-sm">
-                <p className="text-sm font-bold text-slate-900">Health Outbreak - Slum Cluster 2</p>
-                <span className="px-2 py-1 bg-amber-100 text-amber-700 rounded text-[10px] font-bold">WARNING</span>
-              </div>
+            <div>
+              <h4 className="font-bold text-rose-950">Crisis Alerts</h4>
+              <p className="text-xs text-rose-700">Immediate attention required in these areas</p>
             </div>
-         </div>
+          </div>
+          <div className="space-y-3">
+            <div className="p-4 bg-white border border-rose-200 rounded-xl flex justify-between items-center">
+              <p className="text-sm font-bold text-slate-900">Flood Warning - Sector 9</p>
+              <span className="px-2 py-1 bg-rose-100 text-rose-700 rounded text-[10px] font-bold">CRITICAL</span>
+            </div>
+            <div className="p-4 bg-white border border-rose-200 rounded-xl flex justify-between items-center shadow-sm">
+              <p className="text-sm font-bold text-slate-900">Health Outbreak - Slum Cluster 2</p>
+              <span className="px-2 py-1 bg-amber-100 text-amber-700 rounded text-[10px] font-bold">WARNING</span>
+            </div>
+          </div>
+        </div>
 
-         <div className="bg-white border border-slate-200 p-6 rounded-2xl shadow-sm">
-            <div className="flex items-center justify-between mb-6">
-              <h4 className="font-bold text-slate-900 flex items-center gap-2">
-                <TrendingUp size={18} className="text-emerald-500" />
-                Popular Complaint Categories
-              </h4>
-            </div>
-            <div className="grid grid-cols-2 gap-4">
-              {[
-                { label: "Drainage", value: "34%", color: "bg-blue-500" },
-                { label: "Electricity", value: "24%", color: "bg-amber-500" },
-                { label: "Public Health", value: "18%", color: "bg-rose-500" },
-                { label: "Police/Security", value: "14%", color: "bg-indigo-500" },
-              ].map((c, i) => (
-                <div key={i} className="p-4 rounded-xl border border-slate-100 hover:border-slate-200 transition-all flex flex-col justify-between h-24">
-                  <span className="text-xs font-bold text-slate-500 mb-2 uppercase tracking-tight">{c.label}</span>
-                  <div className="flex items-end justify-between">
-                    <span className="text-xl font-black text-slate-900">{c.value}</span>
-                    <div className={`size-3 rounded-full ${c.color} animate-pulse`}></div>
-                  </div>
+        <div className="bg-white border border-slate-200 p-6 rounded-2xl shadow-sm">
+          <div className="flex items-center justify-between mb-6">
+            <h4 className="font-bold text-slate-900 flex items-center gap-2">
+              <TrendingUp size={18} className="text-emerald-500" />
+              Popular Complaint Categories
+            </h4>
+          </div>
+          <div className="grid grid-cols-2 gap-4">
+            {[
+              { label: "Drainage", value: "34%", color: "bg-blue-500" },
+              { label: "Electricity", value: "24%", color: "bg-amber-500" },
+              { label: "Public Health", value: "18%", color: "bg-rose-500" },
+              { label: "Police/Security", value: "14%", color: "bg-indigo-500" },
+            ].map((c, i) => (
+              <div key={i} className="p-4 rounded-xl border border-slate-100 hover:border-slate-200 transition-all flex flex-col justify-between h-24">
+                <span className="text-xs font-bold text-slate-500 mb-2 uppercase tracking-tight">{c.label}</span>
+                <div className="flex items-end justify-between">
+                  <span className="text-xl font-black text-slate-900">{c.value}</span>
+                  <div className={`size-3 rounded-full ${c.color} animate-pulse`}></div>
                 </div>
-              ))}
-            </div>
-         </div>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     </div>
   );

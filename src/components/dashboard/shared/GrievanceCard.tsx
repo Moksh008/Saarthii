@@ -2,7 +2,7 @@ import { StatusBadge } from './StatusBadge';
 import type { GrievanceStatus } from './StatusBadge';
 import { PriorityBadge } from './PriorityBadge';
 import type { PriorityLevel } from './PriorityBadge';
-import { MapPin, Calendar, Clock } from 'lucide-react';
+import { MapPin, Calendar, Clock, ShieldAlert } from 'lucide-react';
 
 export interface GrievanceProps {
   id: string;
@@ -13,18 +13,37 @@ export interface GrievanceProps {
   status: GrievanceStatus;
   priority: PriorityLevel;
   sla?: string;
+  isSpam?: boolean;
 }
 
 export function GrievanceCard({ grievance, onClick }: { grievance: GrievanceProps, onClick?: (id: string) => void }) {
+  const isSpam = grievance.isSpam;
+
   return (
     <div 
-      className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm hover:shadow-md transition-all cursor-pointer group"
+      className={`rounded-xl p-5 shadow-sm hover:shadow-md transition-all cursor-pointer group border ${
+        isSpam 
+          ? 'bg-red-50 border-red-300 ring-2 ring-red-100' 
+          : 'bg-white border-slate-200'
+      }`}
       onClick={() => onClick?.(grievance.id)}
     >
+      {/* Spam Banner */}
+      {isSpam && (
+        <div className="flex items-center gap-2 bg-red-100 text-red-700 px-3 py-2 rounded-lg mb-4 border border-red-200 text-xs font-bold">
+          <ShieldAlert size={16} />
+          Flagged as Spam — This complaint was automatically detected as spam
+        </div>
+      )}
+
       <div className="flex justify-between items-start mb-3">
         <div>
-          <h3 className="text-base font-bold text-slate-900 group-hover:text-primary transition-colors">{grievance.title}</h3>
-          <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-semibold bg-primary/10 text-primary mt-2">
+          <h3 className={`text-base font-bold group-hover:text-primary transition-colors ${
+            isSpam ? 'text-red-800' : 'text-slate-900'
+          }`}>{grievance.title}</h3>
+          <span className={`inline-flex items-center px-2 py-0.5 rounded text-[10px] font-semibold mt-2 ${
+            isSpam ? 'bg-red-100 text-red-600' : 'bg-primary/10 text-primary'
+          }`}>
             {grievance.category}
           </span>
         </div>

@@ -9,21 +9,9 @@ export function GovDashboard() {
       <DashboardSidebar />
 
       {/* Main Content Area */}
-      <div className="flex-1 relative w-full h-full overflow-hidden">
-        {/* Static Background Layer */}
-        <div
-          className="absolute inset-0 z-0 pointer-events-none"
-          style={{
-            backgroundImage: 'url(/images/feedback_bg.png)',
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            backgroundRepeat: 'no-repeat',
-          }}
-        />
-        <div className="absolute inset-0 z-0 bg-white/30 pointer-events-none" />
-
+      <div className="flex-1 relative w-full h-full overflow-hidden bg-[#e8eaed]">
         {/* Scrolling Content Layer */}
-        <div className="relative z-10 w-full h-full overflow-y-auto p-8">
+        <div className="w-full h-full overflow-y-auto p-4 md:p-8">
           <Outlet />
         </div>
       </div>

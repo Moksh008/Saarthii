@@ -25,6 +25,7 @@ export function MyGrievances() {
           date: new Date(item.created_at).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }),
           status: item.status.charAt(0).toUpperCase() + item.status.slice(1).replace('_', ' '),
           priority: item.priority.charAt(0).toUpperCase() + item.priority.slice(1),
+          isSpam: item.is_spam === true,
           // mock sla for now as backend sla_deadline might be None or needs format
           sla: item.sla_deadline ? new Date(item.sla_deadline).toLocaleDateString() : 'N/A',
         }));
@@ -42,7 +43,9 @@ export function MyGrievances() {
 
   const filtered = grievances.filter(g => {
     const matchesSearch = g.title.toLowerCase().includes(searchTerm.toLowerCase()) || g.id.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesStatus = filterStatus === 'All' || g.status.toLowerCase().replace('_', ' ') === filterStatus.toLowerCase();
+    const matchesStatus = filterStatus === 'All' 
+      || (filterStatus === 'Spam' && g.isSpam)
+      || (!g.isSpam && g.status.toLowerCase().replace('_', ' ') === filterStatus.toLowerCase());
     return matchesSearch && matchesStatus;
   });
 
@@ -83,6 +86,7 @@ export function MyGrievances() {
             <option value="Pending">Pending</option>
             <option value="Under Review">Under Review</option>
             <option value="Resolved">Resolved</option>
+            <option value="Spam">Spam</option>
           </select>
         </div>
       </div>

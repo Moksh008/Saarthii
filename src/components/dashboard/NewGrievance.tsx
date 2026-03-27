@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { MapPin, AlertCircle, Bot } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { AIAssistantChat } from './shared/AIAssistantChat';
+import { SubmitProgressModal } from './shared/SubmitProgressModal';
 import { apiFetch } from '@/lib/api';
 import Hyperspeed from '../ui/Hyperspeed';
 
@@ -19,6 +20,7 @@ export function NewGrievance() {
 
   const [isTyping, setIsTyping] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState<'idle' | 'processing' | 'success'>('idle');
   const [errorParam, setErrorParam] = useState('');
   const [formAutoFilled, setFormAutoFilled] = useState(false);
   const [aiStep, setAiStep] = useState<'closed' | 'intro' | 'chat'>('closed');
@@ -134,6 +136,7 @@ export function NewGrievance() {
             <form className="space-y-6" onSubmit={async (e) => {
                 e.preventDefault();
                 setIsSubmitting(true);
+                setSubmitStatus('processing');
                 setErrorParam('');
                 try {
                   // Upload files first
@@ -160,9 +163,11 @@ export function NewGrievance() {
                     })
                   });
 
-                  navigate('/dashboard/my-grievances');
+                  // Display success internally instead of immediately navigating
+                  setSubmitStatus('success');
                 } catch (err: any) {
                   console.error('Failed to submit grievance', err);
+                  setSubmitStatus('idle');
                   setErrorParam(err.message || 'Failed to submit grievance. Please try again.');
                 } finally {
                   setIsSubmitting(false);
@@ -424,6 +429,16 @@ export function NewGrievance() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* ░░░ SUBMISSION PROGRESS & SUCCESS MODAL ░░░ */}
+      <SubmitProgressModal 
+        isOpen={submitStatus !== 'idle'} 
+        status={submitStatus === 'success' ? 'success' : 'processing'} 
+        onClose={() => {
+          setSubmitStatus('idle');
+          navigate('/dashboard/my-grievances');
+        }} 
+      />
     </div>
   );
 }

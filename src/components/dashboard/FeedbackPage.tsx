@@ -134,8 +134,8 @@ export function FeedbackPage() {
                 layout
                 className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden"
               >
-                <div className="p-5 flex items-start justify-between gap-4">
-                  <div className="flex-1 min-w-0">
+                <div className="p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 w-full">
+                  <div className="flex-1 min-w-0 w-full">
                     <div className="flex items-center gap-2 mb-1">
                       <button
                         onClick={() => navigate(`/dashboard/grievances/${c._id}`)}

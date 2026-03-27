@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { MapPin, AlertCircle, Bot } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { AIAssistantChat } from './shared/AIAssistantChat';
 import { apiFetch } from '@/lib/api';
+import Hyperspeed from '../ui/Hyperspeed';
 
 export function NewGrievance() {
   const navigate = useNavigate();
@@ -19,6 +21,46 @@ export function NewGrievance() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorParam, setErrorParam] = useState('');
   const [formAutoFilled, setFormAutoFilled] = useState(false);
+  const [aiStep, setAiStep] = useState<'closed' | 'intro' | 'chat'>('closed');
+
+  // Launch AI with voice and animations
+  const openAI = () => {
+    setAiStep('intro');
+    
+    // Attempt Text-to-Speech
+    try {
+      const msg = new SpeechSynthesisUtterance("Hi, I am Saarthii. How can I help you?");
+      msg.lang = 'en-IN';
+      msg.pitch = 1.0;
+      msg.rate = 1.0;
+      
+      const voices = window.speechSynthesis.getVoices();
+      if (voices.length > 0) {
+        const bestVoice = voices.find(v => v.name.includes('Google') || v.name.includes('Natural')) || voices.find(v => v.lang.startsWith('en'));
+        if (bestVoice) msg.voice = bestVoice;
+      }
+      
+      // Auto-transition to chat when speech finishes
+      msg.onend = () => setAiStep('chat');
+      
+      window.speechSynthesis.cancel(); // Clear any existing speech
+      setTimeout(() => {
+        window.speechSynthesis.speak(msg);
+      }, 1200);
+    } catch (e) {
+      console.warn("Speech synthesis not supported or blocked");
+    }
+
+    // Fallback timer to ensure we transition even if speech fails
+    setTimeout(() => {
+      setAiStep(prev => prev === 'intro' ? 'chat' : prev);
+    }, 6500);
+  };
+
+  const closeAI = () => {
+    window.speechSynthesis.cancel();
+    setAiStep('closed');
+  };
 
   // AI typing indicator when user manually types
   useEffect(() => {
@@ -45,6 +87,7 @@ export function NewGrievance() {
     setState(data.state || '');
     setPincode(data.pincode || '');
     setFormAutoFilled(true);
+    closeAI(); // Close AI modal smoothly after fill
 
     // Scroll to form top after fill
     setTimeout(() => {
@@ -52,7 +95,7 @@ export function NewGrievance() {
         behavior: 'smooth',
         block: 'start',
       });
-    }, 300);
+    }, 400);
   }
 
   return (
@@ -62,8 +105,8 @@ export function NewGrievance() {
         <p className="text-slate-600 mt-2">Describe your issue. Our AI will automatically categorize and prioritize it for faster resolution.</p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <div className="lg:col-span-2 space-y-6">
+      <div className="w-full max-w-4xl mx-auto space-y-6">
+        <div className="space-y-6">
           <div
             id="complaint-form-card"
             className={`bg-white p-8 rounded-xl border shadow-sm relative overflow-hidden transition-all duration-500 ${
@@ -219,15 +262,15 @@ export function NewGrievance() {
                 </div>
               </div>
 
-              <div className="pt-4 border-t border-slate-100 flex items-center justify-between">
+              <div className="pt-4 border-t border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div className="flex items-center gap-2 text-slate-500">
-                  <AlertCircle size={16} />
+                  <AlertCircle size={16} className="flex-shrink-0" />
                   <span className="text-xs">False reporting may lead to account penalties.</span>
                 </div>
                 <button 
                   type="submit"
                   disabled={isSubmitting}
-                  className="bg-primary text-white font-semibold py-3 px-8 rounded-lg hover:bg-primary/90 transition-all shadow-md hover:shadow-lg transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+                  className="w-full sm:w-auto bg-primary text-white font-semibold py-3 px-8 rounded-lg hover:bg-primary/90 transition-all shadow-md hover:shadow-lg transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
                 >
                   {isSubmitting ? 'Submitting...' : 'Submit Grievance'}
                 </button>
@@ -235,14 +278,152 @@ export function NewGrievance() {
             </form>
           </div>
         </div>
-
-        {/* AI Assistant Sidebar */}
-        <div className="lg:col-span-1">
-          <div className="sticky top-6">
-            <AIAssistantChat onFormFill={handleFormFill} />
-          </div>
-        </div>
       </div>
+
+      {/* ░░░ FLOATING AI BUTTON ░░░ */}
+      <AnimatePresence>
+        {aiStep === 'closed' && (
+          <motion.button
+            initial={{ scale: 0, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            exit={{ scale: 0, opacity: 0 }}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={openAI}
+            className="fixed bottom-6 right-6 lg:bottom-10 lg:right-10 z-40 w-16 h-16 rounded-full bg-gradient-to-tr from-indigo-600 to-purple-600 shadow-2xl flex items-center justify-center overflow-hidden group focus:outline-none focus:ring-4 focus:ring-purple-500/30"
+            title="Open Saarthii AI Assistant"
+          >
+            <div className="absolute inset-0 bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity" />
+            <img src="/images/saarthii_ai_logo.png" alt="AI Icon" className="w-[120%] h-[120%] object-cover scale-[1.1]" />
+            {/* Ping indicator */}
+            <span className="absolute top-0 right-0 w-4 h-4 rounded-full bg-emerald-400 border-2 border-purple-600">
+              <span className="absolute inset-0 rounded-full bg-emerald-400 animate-ping opacity-75" />
+            </span>
+          </motion.button>
+        )}
+      </AnimatePresence>
+
+      {/* ░░░ IMMERSIVE AI OVERLAY ░░░ */}
+      <AnimatePresence>
+        {aiStep !== 'closed' && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.4 }}
+            className="fixed inset-0 z-50 flex items-center justify-center bg-[#0a0f1c]/80 backdrop-blur-xl p-4 lg:p-8"
+            onClick={(e) => {
+              if (e.target === e.currentTarget) closeAI();
+            }}
+          >
+            <AnimatePresence mode="wait">
+              {aiStep === 'intro' && (
+                <motion.div
+                  key="intro"
+                  initial={{ scale: 0.5, opacity: 0, filter: 'blur(10px)' }}
+                  animate={{ scale: 1, opacity: 1, filter: 'blur(0px)' }}
+                  exit={{ scale: 1.2, opacity: 0, filter: 'blur(10px)' }}
+                  transition={{ duration: 0.6, ease: "easeOut" }}
+                  className="flex flex-col items-center justify-center text-center absolute inset-0 w-full h-full pointer-events-none overflow-hidden"
+                >
+                  {/* WebGL Hyperspeed Tunnel */}
+                  <div className="absolute inset-0 opacity-90 mix-blend-screen pointer-events-none -z-10">
+                    <Hyperspeed
+                      effectOptions={{
+                        "distortion": "turbulentDistortion",
+                        "length": 400,
+                        "roadWidth": 10,
+                        "islandWidth": 2,
+                        "lanesPerRoad": 3,
+                        "fov": 90,
+                        "fovSpeedUp": 150,
+                        "speedUp": 2,
+                        "carLightsFade": 0.4,
+                        "totalSideLightSticks": 20,
+                        "lightPairsPerRoadWay": 40,
+                        "shoulderLinesWidthPercentage": 0.05,
+                        "brokenLinesWidthPercentage": 0.1,
+                        "brokenLinesLengthPercentage": 0.5,
+                        "lightStickWidth": [0.12, 0.5],
+                        "lightStickHeight": [1.3, 1.7],
+                        "movingAwaySpeed": [60, 80],
+                        "movingCloserSpeed": [-120, -160],
+                        "carLightsLength": [12, 80],
+                        "carLightsRadius": [0.05, 0.14],
+                        "carWidthPercentage": [0.3, 0.5],
+                        "carShiftX": [-0.8, 0.8],
+                        "carFloorSeparation": [0, 5],
+                        "colors": {
+                          "roadColor": 526344,
+                          "islandColor": 657930,
+                          "background": 0,
+                          "shoulderLines": 1250072,
+                          "brokenLines": 1250072,
+                          "leftCars": [14177983, 6770850, 12732332],
+                          "rightCars": [242627, 941733, 3294549],
+                          "sticks": 242627
+                        }
+                      }}
+                    />
+                  </div>
+                  {/* Dynamic pulse rings for audio effect */}
+                  <motion.div
+                    animate={{ scale: [1, 2.5, 3.5], opacity: [0.6, 0.2, 0] }}
+                    transition={{ duration: 2, repeat: Infinity, ease: "easeOut" }}
+                    className="absolute w-40 h-40 rounded-full border-[2px] border-purple-500/60"
+                  />
+                  <motion.div
+                    animate={{ scale: [1, 2.5, 3.5], opacity: [0.6, 0.2, 0] }}
+                    transition={{ duration: 2, repeat: Infinity, delay: 0.6, ease: "easeOut" }}
+                    className="absolute w-40 h-40 rounded-full border-[2px] border-indigo-400/60"
+                  />
+                  <motion.div
+                    animate={{ scale: [1, 2.5, 3.5], opacity: [0.6, 0.2, 0] }}
+                    transition={{ duration: 2, repeat: Infinity, delay: 1.2, ease: "easeOut" }}
+                    className="absolute w-40 h-40 rounded-full border-[2px] border-amber-400/40"
+                  />
+                  
+                  {/* Outer glow and Logo */}
+                  <div className="relative w-48 h-48 rounded-full shadow-[0_0_120px_rgba(139,92,246,0.5)] bg-slate-900 border-4 border-white/10 flex items-center justify-center overflow-hidden z-10">
+                    <img src="/images/saarthii_ai_logo.png" className="w-[120%] h-[120%] object-cover scale-[1.15]" alt="Saarthii Intro" />
+                  </div>
+
+                  {/* Greeting Text */}
+                  <motion.h2 
+                    initial={{ y: 20, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    transition={{ delay: 0.3, duration: 0.5 }}
+                    className="mt-10 text-5xl font-black text-white tracking-tighter"
+                  >
+                    Hi, I am <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-orange-400 to-rose-400">Saarthii</span>
+                  </motion.h2>
+                  <motion.p
+                    initial={{ y: 10, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    transition={{ delay: 0.8, duration: 0.5 }}
+                    className="text-lg text-white/60 mt-4 font-medium"
+                  >
+                    Preparing secure connection...
+                  </motion.p>
+                </motion.div>
+              )}
+
+              {aiStep === 'chat' && (
+                <motion.div
+                  key="chat"
+                  initial={{ scale: 0.9, y: 40, opacity: 0 }}
+                  animate={{ scale: 1, y: 0, opacity: 1 }}
+                  exit={{ scale: 0.9, y: 40, opacity: 0 }}
+                  transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+                  className="w-full max-w-5xl h-[85vh] lg:h-[80vh] bg-transparent rounded-2xl shadow-2xl overflow-hidden relative"
+                >
+                  <AIAssistantChat onFormFill={handleFormFill} onClose={closeAI} />
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

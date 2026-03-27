@@ -1,5 +1,6 @@
 import { DashboardSidebar } from '@/components/DashboardSidebar';
 import { Outlet } from 'react-router-dom';
+import ShapeGrid from '@/components/ui/ShapeGrid';
 
 export function Dashboard() {
   return (
@@ -9,20 +10,21 @@ export function Dashboard() {
 
       {/* Main Content Area */}
       <div className="flex-1 relative w-full h-full overflow-hidden">
-        {/* Static Background Layer */}
-        <div
-          className="absolute inset-0 z-0 pointer-events-none"
-          style={{
-            backgroundImage: 'url(/images/feedback_bg.png)',
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            backgroundRepeat: 'no-repeat',
-          }}
-        />
-        <div className="absolute inset-0 z-0 bg-white/30 pointer-events-none" />
+        {/* Dynamic Background Layer */}
+        <div className="absolute inset-0 z-0 bg-white">
+          <ShapeGrid 
+            direction="diagonal"
+            borderColor="rgba(249, 115, 22, 0.3)" /* Tailwind orange-500 with 30% opacity */
+            hoverFillColor="rgba(249, 115, 22, 0.8)" /* Bright orange on hover */
+            squareSize={40}
+            shape="square"
+            speed={0.5}
+            hoverTrailAmount={1}
+          />
+        </div>
 
         {/* Scrolling Content Layer */}
-        <div className="relative z-10 w-full h-full overflow-y-auto p-8">
+        <div className="relative z-10 w-full h-full overflow-y-auto p-4 md:p-8">
           <Outlet />
         </div>
       </div>

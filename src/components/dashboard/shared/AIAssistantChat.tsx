@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
-import { Send, Mic, MicOff, Bot, User, Sparkles, Loader2 } from 'lucide-react';
+import { Send, Mic, MicOff, Bot, User, Loader2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { apiFetch } from '@/lib/api';
 
@@ -21,6 +21,7 @@ interface FormData {
 
 interface AIAssistantChatProps {
   onFormFill: (data: FormData) => void;
+  onClose?: () => void;
 }
 
 /* ─── Speech Recognition type shim ───────────────────── */
@@ -32,12 +33,12 @@ interface SpeechRecognitionEvent {
 
 /* ─── Component ───────────────────────────────────────── */
 
-export function AIAssistantChat({ onFormFill }: AIAssistantChatProps) {
+export function AIAssistantChat({ onFormFill, onClose }: AIAssistantChatProps) {
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
       role: 'assistant',
       content:
-        "Hi! I'm Saarthii AI 👋 Tell me about the problem you're facing — I'll help you file a complaint. You can type or use the 🎤 mic button to speak.",
+        "Hi! I'm Saarthii AI. Tell me about the problem you're facing — I'll help you file a complaint. You can type or use the mic button to speak.",
     },
   ]);
   const [input, setInput] = useState('');
@@ -52,6 +53,57 @@ export function AIAssistantChat({ onFormFill }: AIAssistantChatProps) {
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
+
+  // Cancel any ongoing speech when the chat modal closes/unmounts
+  useEffect(() => {
+    return () => {
+      window.speechSynthesis.cancel();
+    };
+  }, []);
+
+  /* ─── Speech Synthesis Utility ──────────────────────── */
+  const speakText = useCallback((text: string) => {
+    try {
+      window.speechSynthesis.cancel();
+      
+      // Clean text of markdown characters that cause unnatural TTS pauses
+      const cleanText = text.replace(/[*_~\[\]]/g, '').replace(/#/g, '').replace(/\n+/g, ' . ').trim();
+      const msg = new SpeechSynthesisUtterance(cleanText);
+      
+      // Basic language detection: if Devanagari script is present, use Hindi
+      const hasDevanagari = /[\u0900-\u097F]/.test(text);
+      const targetLang = hasDevanagari ? 'hi-IN' : 'en-IN';
+      msg.lang = targetLang;
+      // Use 1.0 rate. Slower rates force modern TTS to chop word-by-word.
+      msg.rate = 1.0;
+      msg.pitch = 1.0;
+      
+      // Intelligently select the most premium/human-sounding voice available
+      const voices = window.speechSynthesis.getVoices();
+      if (voices.length > 0) {
+        const langPrefix = targetLang.split('-')[0];
+        const matchVoices = voices.filter(v => v.lang.startsWith(langPrefix));
+        
+        // Prioritize cloud-based, "Google", "Natural", or "Premium" voices
+        const bestVoice = matchVoices.sort((a, b) => {
+          let aScore = 0; let bScore = 0;
+          if (a.name.includes('Google') || a.name.includes('Natural') || a.name.includes('Premium')) aScore += 10;
+          if (b.name.includes('Google') || b.name.includes('Natural') || b.name.includes('Premium')) bScore += 10;
+          if (!a.localService) aScore += 5; // Cloud voices usually sound vastly better
+          if (!b.localService) bScore += 5;
+          return bScore - aScore;
+        })[0];
+
+        if (bestVoice) {
+          msg.voice = bestVoice;
+        }
+      }
+      
+      window.speechSynthesis.speak(msg);
+    } catch (e) {
+      console.warn('Speech synthesis failed/unsupported', e);
+    }
+  }, []);
 
   /* ─── Send message ──────────────────────────────────── */
 
@@ -78,6 +130,7 @@ export function AIAssistantChat({ onFormFill }: AIAssistantChatProps) {
 
         const aiMsg: ChatMessage = { role: 'assistant', content: data.reply };
         setMessages((prev) => [...prev, aiMsg]);
+        speakText(data.reply);
 
         // If AI returned form data, trigger auto-fill
         if (data.form_data && !formFilled) {
@@ -93,13 +146,15 @@ export function AIAssistantChat({ onFormFill }: AIAssistantChatProps) {
           continue;
         }
         // Final attempt failed
+        const errorMsg = 'I had a brief connection issue. Please send your message again — I\'m ready!';
         setMessages((prev) => [
           ...prev,
           {
             role: 'assistant',
-            content: 'I had a brief connection issue. Please send your message again — I\'m ready!',
+            content: errorMsg,
           },
         ]);
+        speakText(errorMsg);
       }
     }
     setIsLoading(false);
@@ -157,22 +212,36 @@ export function AIAssistantChat({ onFormFill }: AIAssistantChatProps) {
   };
 
   return (
-    <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden flex flex-col h-[520px]">
+    <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden flex flex-col h-full min-h-[500px]">
       {/* Header */}
-      <div className="bg-gradient-to-r from-indigo-600 via-violet-600 to-purple-600 px-5 py-4 flex items-center gap-3 shrink-0">
-        <div className="w-9 h-9 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center">
-          <Sparkles size={18} className="text-white" />
+      <div className="bg-gradient-to-r from-indigo-600 via-violet-600 to-purple-600 px-5 py-4 flex items-center justify-between shrink-0">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-full flex items-center justify-center shrink-0 overflow-hidden shadow-sm border border-white/20">
+            <img src="/images/saarthii_ai_logo.png" alt="Saarthii AI" className="w-full h-full object-cover scale-[1.15]" />
+          </div>
+          <div>
+            <h3 className="font-bold text-white text-sm md:text-base leading-tight">Saarthii AI Assistant</h3>
+            <p className="text-[11px] md:text-sm text-white/70">Describe your problem • I'll fill the form</p>
+          </div>
         </div>
-        <div>
-          <h3 className="font-bold text-white text-sm leading-tight">Saarthii AI Assistant</h3>
-          <p className="text-[11px] text-white/70">Describe your problem • I'll fill the form</p>
+
+        <div className="flex items-center gap-3">
+          {isListening && (
+            <span className="flex items-center gap-1.5 text-[11px] text-white font-medium bg-red-500/80 px-2.5 py-1 rounded-full">
+              <span className="w-2 h-2 rounded-full bg-white animate-pulse" />
+              Listening…
+            </span>
+          )}
+          {onClose && (
+            <button
+              onClick={onClose}
+              className="p-1.5 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors"
+              title="Close Assistant"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </button>
+          )}
         </div>
-        {isListening && (
-          <span className="ml-auto flex items-center gap-1.5 text-[11px] text-white font-medium bg-red-500/80 px-2.5 py-1 rounded-full">
-            <span className="w-2 h-2 rounded-full bg-white animate-pulse" />
-            Listening…
-          </span>
-        )}
       </div>
 
       {/* Messages area */}

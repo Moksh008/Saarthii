@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, MapPin, Calendar, Clock, Share2, Download, Loader2, AlertCircle } from 'lucide-react';
+import { ArrowLeft, MapPin, Calendar, Clock, Share2, Download, Loader2, AlertCircle, Trash2, X, Trash } from 'lucide-react';
 import { StatusBadge } from './shared/StatusBadge';
 import { PriorityBadge } from './shared/PriorityBadge';
 import { TimelineComponent } from './shared/TimelineComponent';
@@ -8,6 +8,7 @@ import { AIInsightPanel } from './shared/AIInsightPanel';
 import { FeedbackCard } from './shared/FeedbackCard';
 import { AIProblemDescription } from './shared/AIProblemDescription';
 import { apiFetch } from '@/lib/api';
+import { useAuth } from '@/context/AuthContext';
 
 export function GrievanceDetail() {
   const { id } = useParams();
@@ -15,6 +16,9 @@ export function GrievanceDetail() {
   const [complaint, setComplaint] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const { user } = useAuth();
 
   useEffect(() => {
     async function loadComplaint() {
@@ -70,6 +74,19 @@ export function GrievanceDetail() {
   const displayStatus = statusMap[complaint.status] || 'Pending';
   const displayPriority = complaint.priority?.charAt(0).toUpperCase() + complaint.priority?.slice(1) || 'Medium';
 
+  const handleDelete = async () => {
+    setIsDeleting(true);
+    try {
+      await apiFetch(`/complaints/${id}`, { method: 'DELETE' });
+      navigate('/dashboard/my-grievances');
+    } catch (err: any) {
+      console.error("Failed to delete complaint:", err);
+      alert(err.message || 'Failed to delete complaint.');
+      setIsDeleting(false);
+      setShowDeleteModal(false);
+    }
+  };
+
   return (
     <div className="max-w-6xl mx-auto pb-12">
       <button 
@@ -89,12 +106,21 @@ export function GrievanceDetail() {
           <p className="text-slate-500 font-mono text-sm">ID: {complaint._id}</p>
         </div>
         <div className="flex gap-2 shrink-0">
-          <button className="p-2 text-slate-500 hover:text-primary bg-white border border-slate-200 rounded-lg hover:border-primary/30 transition-colors shadow-sm">
+          <button className="p-2 text-slate-500 hover:text-primary bg-white border border-slate-200 rounded-lg hover:border-primary/30 transition-colors shadow-sm" title="Share">
             <Share2 size={18} />
           </button>
-          <button className="p-2 text-slate-500 hover:text-primary bg-white border border-slate-200 rounded-lg hover:border-primary/30 transition-colors shadow-sm">
+          <button className="p-2 text-slate-500 hover:text-primary bg-white border border-slate-200 rounded-lg hover:border-primary/30 transition-colors shadow-sm" title="Download">
             <Download size={18} />
           </button>
+          {user?.role === 'citizen' && (
+            <button 
+              onClick={() => setShowDeleteModal(true)}
+              className="p-2 text-rose-500 hover:text-white bg-white hover:bg-rose-500 border border-slate-200 hover:border-rose-500 rounded-lg transition-colors shadow-sm"
+              title="Delete Complaint"
+            >
+              <Trash2 size={18} />
+            </button>
+          )}
         </div>
       </div>
 
@@ -203,6 +229,61 @@ export function GrievanceDetail() {
            />
         </div>
       </div>
+
+      {/* Delete Confirmation Modal */}
+      {showDeleteModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-sm p-4">
+          <div className="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+            <div className="flex items-center justify-between p-5 border-b border-slate-100">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-rose-100 flex items-center justify-center shrink-0">
+                  <Trash className="size-5 text-rose-600" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-bold text-slate-900">Delete Grievance</h3>
+                  <p className="text-sm text-slate-500">This action cannot be undone.</p>
+                </div>
+              </div>
+              <button 
+                onClick={() => setShowDeleteModal(false)}
+                className="text-slate-400 hover:text-slate-600 transition-colors p-1"
+                disabled={isDeleting}
+              >
+                <X size={20} />
+              </button>
+            </div>
+            
+            <div className="p-6 bg-slate-50 text-slate-600 text-sm leading-relaxed">
+              Are you sure you want to permanently delete this grievance? All associated data, including AI insights and status history, will be removed.
+            </div>
+
+            <div className="p-5 border-t border-slate-100 bg-white flex items-center justify-end gap-3">
+              <button
+                onClick={() => setShowDeleteModal(false)}
+                disabled={isDeleting}
+                className="px-4 py-2 font-medium text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleDelete}
+                disabled={isDeleting}
+                className="px-4 py-2 font-medium text-white bg-rose-600 hover:bg-rose-700 rounded-lg transition-colors disabled:opacity-70 disabled:cursor-not-allowed flex items-center gap-2"
+              >
+                {isDeleting ? (
+                  <>
+                    <Loader2 size={16} className="animate-spin" />
+                    Deleting...
+                  </>
+                ) : (
+                  'Yes, Delete'
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 }

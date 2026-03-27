@@ -92,6 +92,27 @@ export function NewGrievance() {
     }
   }, [title, description]);
 
+  // Hydrate fields when AI data is prepared from the dedicated assistant page.
+  useEffect(() => {
+    const raw = sessionStorage.getItem('ai_prefill_grievance');
+    if (!raw) return;
+
+    try {
+      const data = JSON.parse(raw);
+      setTitle(data.title || '');
+      setDescription(data.description || '');
+      setLocation(data.address || '');
+      setCity(data.city || '');
+      setState(data.state || '');
+      setPincode(data.pincode || '');
+      setFormAutoFilled(true);
+    } catch (err) {
+      console.warn('Invalid AI prefill payload', err);
+    } finally {
+      sessionStorage.removeItem('ai_prefill_grievance');
+    }
+  }, []);
+
   // Handler for AI auto-fill
   function handleFormFill(data: {
     title: string;

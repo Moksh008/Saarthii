@@ -13,6 +13,7 @@ import React, { Suspense } from 'react'
 const DashboardOverview = React.lazy(() => import('./components/dashboard/DashboardOverview').then(m => ({ default: m.DashboardOverview })))
 const MyGrievances = React.lazy(() => import('./components/dashboard/MyGrievances').then(m => ({ default: m.MyGrievances })))
 const NewGrievance = React.lazy(() => import('./components/dashboard/NewGrievance').then(m => ({ default: m.NewGrievance })))
+const SaarhtiiKeSath = React.lazy(() => import('@/components/dashboard/SaarhtiiKeSath').then(m => ({ default: m.SaarhtiiKeSath })))
 const MyAppeals = React.lazy(() => import('./components/dashboard/MyAppeals').then(m => ({ default: m.MyAppeals })))
 const ActivityLogs = React.lazy(() => import('./components/dashboard/ActivityLogs').then(m => ({ default: m.ActivityLogs })))
 const EditProfile = React.lazy(() => import('./components/dashboard/EditProfile').then(m => ({ default: m.EditProfile })))
@@ -63,6 +64,7 @@ function AppContent() {
             <Route path="my-grievances" element={<Suspense fallback={<div>Loading grievances...</div>}><MyGrievances /></Suspense>} />
             <Route path="grievances/:id" element={<Suspense fallback={<div>Loading...</div>}><GrievanceDetail /></Suspense>} />
             <Route path="new-grievance" element={<Suspense fallback={<div>Loading form...</div>}><NewGrievance /></Suspense>} />
+            <Route path="saarhtii-ke-sath" element={<Suspense fallback={<div>Loading assistant...</div>}><SaarhtiiKeSath /></Suspense>} />
             <Route path="feedback" element={<Suspense fallback={<div>Loading feedback...</div>}><FeedbackPage /></Suspense>} />
             <Route path="my-appeals" element={<Suspense fallback={<div>Loading appeals...</div>}><MyAppeals /></Suspense>} />
             <Route path="activity-logs" element={<Suspense fallback={<div>Loading...</div>}><ActivityLogs /></Suspense>} />

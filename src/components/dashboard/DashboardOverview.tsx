@@ -415,7 +415,7 @@ export function DashboardOverview() {
               </div>
             </div>
             <button
-              onClick={() => navigate("/dashboard/ai-chat")}
+              onClick={() => navigate("/dashboard/saarhtii-ke-sath")}
               className="mt-4 w-full bg-gradient-to-r from-[#ec5b13] to-[#f07830] text-white font-bold py-3 px-4 rounded-xl hover:from-[#d34f0f] hover:to-[#ec5b13] transition-all animate-pulse-glow text-sm flex items-center justify-center gap-2 hover:-translate-y-0.5 active:scale-[0.98]"
             >
               <Sparkles className="size-4" />

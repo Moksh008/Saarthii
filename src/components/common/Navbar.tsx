@@ -1,6 +1,6 @@
 import { Book, Lightbulb, Target, Settings, HelpCircle, Phone, Globe } from "lucide-react";
 import { Navbar1 } from "../shadcnblocks-com-navbar1";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 const languages = [
   { code: "en", name: "English" },
@@ -29,17 +29,12 @@ const languages = [
 ];
 
 export function Navbar() {
-  const logoSvg = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ec5b13' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M3 21h18'/><path d='M4.5 9h15'/><path d='M12 3l-8.5 6h17Z'/><path d='M6 21v-8'/><path d='M10 21v-8'/><path d='M14 21v-8'/><path d='M18 21v-8'/></svg>";
+  const saarthiiLogo = "/Red_Modern_Lettering_Creative_Studio_Logo-removebg-preview.png";
 
-  const [lang, setLang] = useState("en");
-
-  useEffect(() => {
-    // Check if google sets the cookie
+  const [lang, setLang] = useState(() => {
     const match = document.cookie.match(/googtrans=\/en\/([^;]+)/);
-    if (match) {
-      setLang(match[1]);
-    }
-  }, []);
+    return match?.[1] || "en";
+  });
 
   const handleLanguageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const code = e.target.value;
@@ -93,9 +88,9 @@ export function Navbar() {
         <Navbar1
             logo={{
               url: "/",
-              src: logoSvg,
+              src: saarthiiLogo,
               alt: "Saarthii",
-              title: "Saarthii",
+              title: "",
             }}
             menu={[
               { title: "Home", url: "/" },

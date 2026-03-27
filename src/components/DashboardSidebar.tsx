@@ -12,14 +12,17 @@ import {
   AlertTriangle,
   ClipboardList,
   PlusCircle,
-  MessageSquare
+  MessageSquare,
+  Bot
 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { motion } from "framer-motion";
 
+const SAARTHII_LOGO_SRC = "/Red_Modern_Lettering_Creative_Studio_Logo-removebg-preview.png";
+
 export function DashboardSidebar() {
   const { user, logout } = useAuth();
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(true);
 
   const getLinks = () => {
     const role = user?.role;
@@ -129,6 +132,11 @@ export function DashboardSidebar() {
         icon: <PlusCircle className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />,
       },
       {
+        label: "Saarhtii ke sath",
+        href: "/dashboard/saarhtii-ke-sath",
+        icon: <Bot className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />,
+      },
+      {
         label: "My Complaints",
         href: "/dashboard/my-grievances",
         icon: <FileText className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />,
@@ -192,23 +200,26 @@ export function DashboardSidebar() {
 
 const Logo = () => {
   return (
-    <div className="font-normal flex space-x-2 items-center text-sm text-black py-1 relative z-20">
-      <div className="h-5 w-6 bg-primary rounded-br-lg rounded-tr-sm rounded-tl-lg rounded-bl-sm flex-shrink-0" />
-      <motion.span
+    <div className="py-1 relative z-20 flex justify-center">
+      <motion.img
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        className="font-bold text-slate-800 whitespace-pre"
-      >
-        Saarthii Portal
-      </motion.span>
+        src={SAARTHII_LOGO_SRC}
+        alt="Saarthii"
+        className="h-10 w-auto max-w-full object-contain"
+      />
     </div>
   );
 };
 
 const LogoIcon = () => {
   return (
-    <div className="font-normal flex space-x-2 items-center text-sm text-black py-1 relative z-20">
-      <div className="h-5 w-6 bg-primary rounded-br-lg rounded-tr-sm rounded-tl-lg rounded-bl-sm flex-shrink-0" />
+    <div className="py-1 relative z-20 flex justify-center">
+      <img
+        src={SAARTHII_LOGO_SRC}
+        alt="Saarthii"
+        className="h-10 w-10 object-cover rounded-md"
+      />
     </div>
   );
 };

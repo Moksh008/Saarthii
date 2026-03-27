@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { Home, Phone, Info, HelpCircle, Network } from "lucide-react";
 
 const TAGLINES = [
   "Govern with Intelligence. Resolve with Confidence.",
@@ -134,26 +133,20 @@ function StatsCard() {
 
 export function HeroSection() {
   return (
-    <div className="flex flex-col w-full pt-[70px]">
+    <div className="flex flex-col w-full pt-[80px]">
       {/* Government Top Bar */}
-      <div className="bg-slate-900 text-slate-50 text-[10px] sm:text-xs py-2 px-4 sm:px-6 lg:px-8 hidden lg:flex justify-between items-center w-full">
-        <div className="flex items-center gap-4 divide-x divide-slate-700">
-          <div className="flex flex-col pr-4 leading-tight">
-            <span className="font-semibold text-white/90">भारत सरकार</span>
-            <span className="text-white/70">Government of India</span>
+      <div className="bg-slate-900 text-slate-50 text-[10px] sm:text-xs py-2 px-4 sm:px-6 lg:px-8 hidden lg:flex justify-center items-center w-full">
+        <div className="flex items-center justify-center w-full">
+          <div className="flex items-center justify-center">
+            <img
+              src="/DARPG logo.png"
+              alt="Department of Administrative Reforms and Public Grievances"
+              className="h-12 w-auto object-contain"
+            />
           </div>
-          <div className="flex flex-col pl-4 leading-tight">
-            <span className="font-semibold text-white/90">कार्मिक, लोक शिकायत और पेंशन मंत्रालय</span>
-            <span className="text-white/70">Ministry of Personnel, Public Grievances & Pensions</span>
-          </div>
+          
         </div>
-        <div className="flex items-center gap-4 divide-x divide-slate-700 text-white/80">
-          <a href="/" className="flex items-center gap-1.5 pl-4 hover:text-white transition-colors"><Home className="w-3.5 h-3.5" /> Home</a>
-          <a href="#contact" className="flex items-center gap-1.5 pl-4 hover:text-white transition-colors"><Phone className="w-3.5 h-3.5" /> Contact Us</a>
-          <a href="/about" className="flex items-center gap-1.5 pl-4 hover:text-white transition-colors"><Info className="w-3.5 h-3.5" /> About Us</a>
-          <a href="#faq" className="flex items-center gap-1.5 pl-4 hover:text-white transition-colors"><HelpCircle className="w-3.5 h-3.5" /> FAQs/Help</a>
-          <a href="#sitemap" className="flex items-center gap-1.5 pl-4 hover:text-white transition-colors"><Network className="w-3.5 h-3.5" /> Site Map</a>
-        </div>
+        
       </div>
 
       <section className="relative px-4 pt-10 pb-16 sm:px-6 lg:px-8 bg-slate-50 min-h-[90vh] flex items-center justify-center">

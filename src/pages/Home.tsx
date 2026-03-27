@@ -12,9 +12,9 @@ export function Home() {
   return (
     <>
       <HeroSection />
+      <HowItWorksSection />
       <ProblemSection />
       <SolutionSection />
-      <HowItWorksSection />
       <FeaturesSection />
       <DashboardPreview />
       <ComparisonTable />

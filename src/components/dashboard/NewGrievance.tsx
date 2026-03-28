@@ -64,6 +64,27 @@ export function NewGrievance() {
     setAiStep('closed');
   };
 
+  async function getCurrentCoordinates(): Promise<{ lat: number; lng: number } | null> {
+    if (!navigator.geolocation) return null;
+
+    return new Promise((resolve) => {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          resolve({
+            lat: position.coords.latitude,
+            lng: position.coords.longitude,
+          });
+        },
+        () => resolve(null),
+        {
+          enableHighAccuracy: false,
+          timeout: 5000,
+          maximumAge: 300000,
+        }
+      );
+    });
+  }
+
   // AI typing indicator when user manually types
   useEffect(() => {
     if (title.length > 5 || description.length > 10) {
@@ -72,6 +93,27 @@ export function NewGrievance() {
       return () => clearTimeout(timer);
     }
   }, [title, description]);
+
+  // Hydrate fields when AI data is prepared from the dedicated assistant page.
+  useEffect(() => {
+    const raw = sessionStorage.getItem('ai_prefill_grievance');
+    if (!raw) return;
+
+    try {
+      const data = JSON.parse(raw);
+      setTitle(data.title || '');
+      setDescription(data.description || '');
+      setLocation(data.address || '');
+      setCity(data.city || '');
+      setState(data.state || '');
+      setPincode(data.pincode || '');
+      setFormAutoFilled(true);
+    } catch (err) {
+      console.warn('Invalid AI prefill payload', err);
+    } finally {
+      sessionStorage.removeItem('ai_prefill_grievance');
+    }
+  }, []);
 
   // Handler for AI auto-fill
   function handleFormFill(data: {
@@ -139,6 +181,8 @@ export function NewGrievance() {
                 setSubmitStatus('processing');
                 setErrorParam('');
                 try {
+                  const coords = await getCurrentCoordinates();
+
                   // Upload files first
                   const uploadedUrls: string[] = []
                   for (const f of files) {
@@ -159,6 +203,8 @@ export function NewGrievance() {
                       city: city || 'Delhi',
                       state: state || 'Delhi',
                       pincode: pincode || '110001',
+                      lat: coords?.lat ?? null,
+                      lng: coords?.lng ?? null,
                       images: uploadedUrls
                     })
                   });

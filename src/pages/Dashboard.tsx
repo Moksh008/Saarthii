@@ -3,7 +3,7 @@ import { Outlet } from 'react-router-dom';
 
 export function Dashboard() {
   return (
-    <div className="h-screen bg-slate-50 flex overflow-hidden">
+    <div className="h-screen bg-white flex overflow-hidden">
       {/* Sidebar Navigation */}
       <DashboardSidebar />
 

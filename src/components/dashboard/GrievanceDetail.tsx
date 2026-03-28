@@ -18,6 +18,9 @@ export function GrievanceDetail() {
   const [error, setError] = useState('');
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [isUpdating, setIsUpdating] = useState(false);
+  const [resolutionNote, setResolutionNote] = useState('');
+  const [newStatus, setNewStatus] = useState('');
   const { user } = useAuth();
 
   useEffect(() => {
@@ -84,6 +87,44 @@ export function GrievanceDetail() {
       alert(err.message || 'Failed to delete complaint.');
       setIsDeleting(false);
       setShowDeleteModal(false);
+    }
+  };
+
+  const handleUpdateStatus = async () => {
+    if (!newStatus && !resolutionNote.trim()) {
+      alert("Please select a status or enter a resolution note.");
+      return;
+    }
+    
+    setIsUpdating(true);
+    try {
+      // 1. Add Note if provided
+      if (resolutionNote.trim()) {
+        await apiFetch(`/complaints/${id}/notes`, {
+          method: 'POST',
+          body: JSON.stringify({ text: resolutionNote }),
+        });
+      }
+      
+      // 2. Update Status if provided
+      if (newStatus) {
+        await apiFetch(`/complaints/${id}/status`, {
+          method: 'PATCH',
+          body: JSON.stringify({ status: newStatus }),
+        });
+      }
+      
+      // Reload the complaint
+      const refreshed = await apiFetch(`/complaints/${id}`);
+      setComplaint(refreshed);
+      setResolutionNote('');
+      setNewStatus('');
+      
+    } catch (err: any) {
+      console.error("Failed to update task:", err);
+      alert(err.message || "Failed to update grievance.");
+    } finally {
+      setIsUpdating(false);
     }
   };
 
@@ -197,6 +238,52 @@ export function GrievanceDetail() {
               notes={complaint.notes}
             />
           </div>
+
+          {/* Officer Action Panel */}
+          {(user?.role === 'officer' || user?.role === 'ministry') && (
+            <div className="bg-indigo-50/50 p-8 rounded-xl border border-indigo-100 shadow-sm mt-8">
+              <h2 className="text-lg font-bold text-slate-900 mb-2">Official Actions</h2>
+              <p className="text-sm text-slate-500 mb-6">Update the status or provide a resolution note for this grievance.</p>
+              
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-semibold text-slate-700 mb-1">Update Status</label>
+                  <select 
+                    value={newStatus}
+                    onChange={(e) => setNewStatus(e.target.value)}
+                    className="w-full sm:w-1/2 rounded-xl border-slate-200 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 text-sm py-2 px-3"
+                  >
+                    <option value="">-- No Status Change --</option>
+                    <option value="in_progress">Mark as In Progress</option>
+                    <option value="resolved">Mark as Resolved</option>
+                    <option value="closed">Mark as Closed</option>
+                  </select>
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-semibold text-slate-700 mb-1">Resolution / Official Note</label>
+                  <textarea 
+                    value={resolutionNote}
+                    onChange={(e) => setResolutionNote(e.target.value)}
+                    rows={4}
+                    placeholder="Describe the actions taken or the final resolution..."
+                    className="w-full rounded-xl border-slate-200 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 text-sm py-2 px-3 resize-none"
+                  ></textarea>
+                </div>
+                
+                <div className="flex justify-end pt-2">
+                  <button
+                    onClick={handleUpdateStatus}
+                    disabled={isUpdating || (!newStatus && !resolutionNote.trim())}
+                    className="px-6 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-sm rounded-xl shadow-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                  >
+                    {isUpdating ? <Loader2 size={16} className="animate-spin" /> : null}
+                    Submit Update
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Right Column - AI Insights */}

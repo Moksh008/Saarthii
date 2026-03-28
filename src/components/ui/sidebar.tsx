@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 import { Link, type LinkProps } from "react-router-dom";
 import React, { useState, createContext, useContext } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { Menu, X } from "lucide-react";
+import { ChevronLeft, ChevronRight, Menu, X } from "lucide-react";
 
 interface Links {
   label: string;
@@ -89,16 +89,24 @@ export const DesktopSidebar = ({
   return (
     <motion.div
       className={cn(
-        "h-full px-4 py-4 hidden md:flex md:flex-col bg-neutral-100 dark:bg-neutral-800 w-[300px] flex-shrink-0",
+        "relative h-full px-4 py-4 hidden md:flex md:flex-col w-[300px] flex-shrink-0 border-r border-slate-200/70",
         className
       )}
+      style={{ backgroundColor: "#f7f6f2" }}
       animate={{
         width: animate ? (open ? "300px" : "60px") : "300px",
       }}
-      onMouseEnter={() => setOpen(true)}
-      onMouseLeave={() => setOpen(false)}
       {...props}
     >
+      <button
+        type="button"
+        onClick={() => setOpen((prev) => !prev)}
+        className="absolute -right-3 top-4 z-20 hidden md:flex h-7 w-7 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-700 shadow-sm hover:bg-slate-50"
+        aria-label={open ? "Collapse sidebar" : "Expand sidebar"}
+        title={open ? "Collapse sidebar" : "Expand sidebar"}
+      >
+        {open ? <ChevronLeft className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
+      </button>
       {children}
     </motion.div>
   );
@@ -114,8 +122,9 @@ export const MobileSidebar = ({
     <>
       <div
         className={cn(
-          "h-10 px-4 py-4 flex flex-row md:hidden items-center justify-between bg-neutral-100 dark:bg-neutral-800 w-full"
+          "h-10 px-4 py-4 flex flex-row md:hidden items-center justify-between w-full"
         )}
+        style={{ backgroundColor: "#f7f6f2" }}
         {...props}
       >
         <div className="flex justify-end z-20 w-full">
@@ -135,9 +144,10 @@ export const MobileSidebar = ({
                 ease: "easeInOut",
               }}
               className={cn(
-                "fixed h-full w-full inset-0 bg-white dark:bg-neutral-900 p-10 z-[100] flex flex-col justify-between",
+                "fixed h-full w-full inset-0 p-10 z-[100] flex flex-col justify-between",
                 className
               )}
+              style={{ backgroundColor: "#f7f6f2" }}
             >
               <div
                 className="absolute right-10 top-10 z-50 text-neutral-800 dark:text-neutral-200 cursor-pointer"

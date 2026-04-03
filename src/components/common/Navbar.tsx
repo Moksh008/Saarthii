@@ -29,7 +29,7 @@ const languages = [
 ];
 
 export function Navbar() {
-  const saarthiiLogo = "/Red_Modern_Lettering_Creative_Studio_Logo-removebg-preview.png";
+  const saarthiiLogo = "/saarthii_logo.png";
 
   const [lang, setLang] = useState(() => {
     const match = document.cookie.match(/googtrans=\/en\/([^;]+)/);

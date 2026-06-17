@@ -35,6 +35,32 @@ export function DashboardSidebar() {
       },
     ];
 
+    if (role === 'delhi_cm') {
+      return [
+        {
+          label: "CM Grievance Dashboard",
+          href: "/gov-dashboard",
+          icon: <LayoutDashboard className="text-neutral-700 h-5 w-5" />,
+        },
+        {
+          label: "Delhi Heatmaps",
+          href: "/gov-dashboard/heatmaps",
+          icon: <MapIcon className="text-neutral-700 h-5 w-5" />,
+        },
+        {
+          label: "SLA Tracker",
+          href: "/gov-dashboard/sla",
+          icon: <ClipboardList className="text-neutral-700 h-5 w-5" />,
+        },
+        {
+          label: "Activity Logs",
+          href: "/gov-dashboard/logs",
+          icon: <History className="text-neutral-700 h-5 w-5" />,
+        },
+        ...commonLinks
+      ];
+    }
+
     if (role === 'ministry') {
       return [
         {

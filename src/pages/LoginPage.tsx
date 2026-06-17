@@ -183,7 +183,7 @@ export function LoginPage() {
   const [otp, setOtp] = useState("");
   const [showOtpInput, setShowOtpInput] = useState(false);
   const [confirmationResult, setConfirmationResult] = useState<ConfirmationResult | null>(null);
-  const [selectedRole, setSelectedRole] = useState("officer");
+  const [selectedRole, setSelectedRole] = useState("delhi_cm");
 
   const purpleRef = useRef<HTMLDivElement>(null);
   const blackRef = useRef<HTMLDivElement>(null);
@@ -249,6 +249,21 @@ export function LoginPage() {
       setIsPurplePeeking(false);
     }
   }, [password, showPassword, isPurplePeeking]);
+
+  useEffect(() => {
+    if (activeTab === 'official') {
+      if (selectedRole === 'delhi_cm') {
+        setEmail("cm.delhi@gov.in");
+        setPassword("123456");
+      } else if (selectedRole === 'ministry') {
+        setEmail("road.ministry@gov.in");
+        setPassword("123456");
+      } else {
+        setEmail("");
+        setPassword("");
+      }
+    }
+  }, [selectedRole, activeTab]);
 
   const calculatePosition = (ref: React.RefObject<HTMLDivElement | null>) => {
     if (!ref.current) return { faceX: 0, faceY: 0, bodyRotation: 0 };
@@ -599,6 +614,7 @@ export function LoginPage() {
                   className="w-full h-12 px-3 bg-background border border-border/60 rounded-md focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary shadow-sm"
                 >
                   <option value="" disabled>Select your designation...</option>
+                  <option value="delhi_cm">Delhi Chief Minister (CM)</option>
                   <option value="mc">Municipal Corporation (MC)</option>
                   <option value="ministry">Ministry</option>
                   <option value="mp_mla">MP / MLA</option>

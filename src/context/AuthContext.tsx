@@ -4,7 +4,7 @@ import apiFetch from '@/lib/api';
 interface User {
   id: string;
   auth0_id: string;
-  role: 'citizen' | 'officer' | 'ministry' | 'mp_mla' | 'mc' | 'admin';
+  role: 'citizen' | 'officer' | 'ministry' | 'mp_mla' | 'mc' | 'admin' | 'delhi_cm';
   name: string;
   email: string;
   [key: string]: any;

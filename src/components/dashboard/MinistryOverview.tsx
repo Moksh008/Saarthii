@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { BarChart, Activity, Map as MapIcon, TrendingUp, AlertTriangle, Users, Building2, Clock, FileText, Loader2, PieChart } from "lucide-react";
+import { BarChart, Activity, Map as MapIcon, TrendingUp, AlertTriangle, Building2, Clock, FileText, Loader2, PieChart } from "lucide-react";
 import apiFetch from "@/lib/api";
 import { useAuth } from "@/context/AuthContext";
 
@@ -54,13 +54,6 @@ const STATUS_COLORS: Record<string, string> = {
   resolved: "bg-emerald-500",
 };
 
-const PRIORITY_COLORS: Record<string, string> = {
-  low: "bg-slate-400",
-  medium: "bg-blue-500",
-  high: "bg-amber-500",
-  critical: "bg-rose-600",
-};
-
 const STATUS_BADGE: Record<string, string> = {
   submitted: "bg-slate-100 text-slate-700",
   classified: "bg-blue-50 text-blue-700",
@@ -70,12 +63,7 @@ const STATUS_BADGE: Record<string, string> = {
   closed: "bg-emerald-50 text-emerald-700",
 };
 
-const PRIORITY_BADGE: Record<string, string> = {
-  low: "bg-slate-100 text-slate-600",
-  medium: "bg-blue-50 text-blue-700",
-  high: "bg-amber-50 text-amber-700",
-  critical: "bg-rose-50 text-rose-700",
-};
+
 
 const CATEGORY_COLORS = [
   "bg-blue-500", "bg-emerald-500", "bg-amber-500", "bg-rose-500",
@@ -150,7 +138,6 @@ export function MinistryOverview() {
   }
 
   const activeComplaints = data.status_breakdown.assigned + data.status_breakdown.in_progress;
-  const criticalHigh = data.priority_breakdown.critical + data.priority_breakdown.high;
 
   return (
     <ErrorBoundary>

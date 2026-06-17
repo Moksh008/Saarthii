@@ -28,11 +28,13 @@ const MinistryOverview = React.lazy(() => import('./components/dashboard/Ministr
 const McOverview = React.lazy(() => import('./components/dashboard/McOverview').then(m => ({ default: m.McOverview })))
 const MlaMPOverview = React.lazy(() => import('./components/dashboard/MlaMPOverview').then(m => ({ default: m.MlaMPOverview })))
 const AdminDashboard = React.lazy(() => import('./pages/AdminDashboard').then(m => ({ default: m.AdminDashboard })))
+const CmOverview = React.lazy(() => import('./components/dashboard/CmOverview').then(m => ({ default: m.CmOverview })))
 
 function GovDashboardIndex() {
   const { user } = useAuth();
   return (
     <Suspense fallback={<div className="p-8 text-center animate-pulse text-slate-400">Loading Dashboard...</div>}>
+      {user?.role === 'delhi_cm' && <CmOverview />}
       {user?.role === 'ministry' && <MinistryOverview />}
       {user?.role === 'mp_mla' && <MlaMPOverview />}
       {user?.role === 'mc' && <McOverview />}
@@ -73,7 +75,7 @@ function AppContent() {
           </Route>
 
           {/* Government Dashboard Routes */}
-          <Route path="/gov-dashboard" element={<ProtectedRoute allowedRoles={['officer', 'ministry', 'mp_mla', 'mc']}><Suspense fallback={<div>Loading Gov Dashboard...</div>}><GovDashboard /></Suspense></ProtectedRoute>}>
+          <Route path="/gov-dashboard" element={<ProtectedRoute allowedRoles={['officer', 'ministry', 'mp_mla', 'mc', 'delhi_cm']}><Suspense fallback={<div>Loading Gov Dashboard...</div>}><GovDashboard /></Suspense></ProtectedRoute>}>
             <Route index element={<GovDashboardIndex />} />
             <Route path="analytics" element={<Suspense fallback={<div>Loading...</div>}><MinistryOverview /></Suspense>} />
             <Route path="heatmaps" element={<Suspense fallback={<div>Loading...</div>}><GrievanceMap /></Suspense>} />

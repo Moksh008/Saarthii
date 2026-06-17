@@ -107,7 +107,7 @@ export const DesktopSidebar = ({
       >
         {open ? <ChevronLeft className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
       </button>
-      {children}
+      {children as any}
     </motion.div>
   );
 };

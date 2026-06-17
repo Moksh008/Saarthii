@@ -4,8 +4,15 @@ import 'leaflet/dist/leaflet.css';
 import { Map as MapIcon, Filter, Layers, Loader2, Info } from 'lucide-react';
 import { apiFetch } from '@/lib/api';
 
-// For leaflet default icon issue in react-leaflet
+// @ts-ignore
 import L from 'leaflet';
+
+// Cast components to any to avoid React 19 props compilation mismatch
+const SafeMapContainer = MapContainer as any;
+const SafeTileLayer = TileLayer as any;
+const SafeCircleMarker = CircleMarker as any;
+const SafePopup = Popup as any;
+
 // @ts-ignore
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
@@ -89,20 +96,20 @@ export function GrievanceMap() {
       </div>
 
       <div className="flex-1 bg-slate-100 rounded-3xl border border-slate-200/60 overflow-hidden relative shadow-2xl flex items-center justify-center isolate">
-        <MapContainer 
+        <SafeMapContainer 
           center={[centerLat, centerLng] as any} 
           zoom={11} 
           className="h-full w-full z-0"
           zoomControl={false}
         >
           {/* Using a premium dark/light basemap */}
-          <TileLayer
+          <SafeTileLayer
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
             url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
           />
 
           {locations.map((loc, idx) => (
-            <CircleMarker
+            <SafeCircleMarker
               key={idx}
               center={[loc.lat, loc.lng]}
               radius={8}
@@ -113,7 +120,7 @@ export function GrievanceMap() {
                 weight: 2
               }}
             >
-              <Popup className="rounded-xl overflow-hidden shadow-xl border-0">
+              <SafePopup className="rounded-xl overflow-hidden shadow-xl border-0">
                 <div className="p-1 min-w-[200px]">
                   <div className="text-[10px] font-bold tracking-widest uppercase text-red-500 mb-1">
                     {loc.category || "General Issue"}
@@ -125,10 +132,10 @@ export function GrievanceMap() {
                     {loc.status.replace('_', ' ')}
                   </div>
                 </div>
-              </Popup>
-            </CircleMarker>
+              </SafePopup>
+            </SafeCircleMarker>
           ))}
-        </MapContainer>
+        </SafeMapContainer>
 
         {/* Floating UI Elements over Map */}
         <div className="absolute top-6 right-6 z-[1000] flex flex-col gap-3">

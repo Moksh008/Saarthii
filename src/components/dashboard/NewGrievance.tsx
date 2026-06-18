@@ -5,7 +5,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { AIAssistantChat } from './shared/AIAssistantChat';
 import { SubmitProgressModal } from './shared/SubmitProgressModal';
 import { apiFetch } from '@/lib/api';
-import Hyperspeed from '../ui/Hyperspeed';
 
 export function NewGrievance() {
   const navigate = useNavigate();
@@ -377,46 +376,8 @@ export function NewGrievance() {
                   transition={{ duration: 0.6, ease: "easeOut" }}
                   className="flex flex-col items-center justify-center text-center absolute inset-0 w-full h-full pointer-events-none overflow-hidden"
                 >
-                  {/* WebGL Hyperspeed Tunnel */}
-                  <div className="absolute inset-0 opacity-90 mix-blend-screen pointer-events-none -z-10">
-                    <Hyperspeed
-                      effectOptions={{
-                        "distortion": "turbulentDistortion",
-                        "length": 400,
-                        "roadWidth": 10,
-                        "islandWidth": 2,
-                        "lanesPerRoad": 3,
-                        "fov": 90,
-                        "fovSpeedUp": 150,
-                        "speedUp": 2,
-                        "carLightsFade": 0.4,
-                        "totalSideLightSticks": 20,
-                        "lightPairsPerRoadWay": 40,
-                        "shoulderLinesWidthPercentage": 0.05,
-                        "brokenLinesWidthPercentage": 0.1,
-                        "brokenLinesLengthPercentage": 0.5,
-                        "lightStickWidth": [0.12, 0.5],
-                        "lightStickHeight": [1.3, 1.7],
-                        "movingAwaySpeed": [60, 80],
-                        "movingCloserSpeed": [-120, -160],
-                        "carLightsLength": [12, 80],
-                        "carLightsRadius": [0.05, 0.14],
-                        "carWidthPercentage": [0.3, 0.5],
-                        "carShiftX": [-0.8, 0.8],
-                        "carFloorSeparation": [0, 5],
-                        "colors": {
-                          "roadColor": 526344,
-                          "islandColor": 657930,
-                          "background": 0,
-                          "shoulderLines": 1250072,
-                          "brokenLines": 1250072,
-                          "leftCars": [14177983, 6770850, 12732332],
-                          "rightCars": [242627, 941733, 3294549],
-                          "sticks": 242627
-                        }
-                      }}
-                    />
-                  </div>
+                  {/* WebGL Hyperspeed Tunnel replaced with animated gradient */}
+                  <div className="absolute inset-0 opacity-20 bg-gradient-to-tr from-indigo-500/20 via-purple-500/20 to-pink-500/20 pointer-events-none -z-10 animate-pulse"></div>
                   {/* Dynamic pulse rings for audio effect */}
                   <motion.div
                     animate={{ scale: [1, 2.5, 3.5], opacity: [0.6, 0.2, 0] }}

@@ -306,7 +306,7 @@ export function LoginPage() {
       recaptchaVerifierRef.current = new RecaptchaVerifier(auth, 'recaptcha-container', {
         'size': 'invisible',
         'callback': () => {
-          console.log("Recaptcha verified");
+          // reCAPTCHA verified — no action required
         }
       });
     } catch (e) {

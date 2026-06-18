@@ -16,59 +16,59 @@ export default defineConfig({
     },
     proxy: {
       '/auth': {
-        target: 'http://localhost:8000',
+        target: 'https://ps-crm-saarthi-public-grievance-portal.onrender.com',
         changeOrigin: true,
       },
       '/admin': {
-        target: 'http://localhost:8000',
+        target: 'https://ps-crm-saarthi-public-grievance-portal.onrender.com',
         changeOrigin: true,
       },
       '/dashboard/citizen': {
-        target: 'http://localhost:8000',
+        target: 'https://ps-crm-saarthi-public-grievance-portal.onrender.com',
         changeOrigin: true,
       },
       '/dashboard/officer': {
-        target: 'http://localhost:8000',
+        target: 'https://ps-crm-saarthi-public-grievance-portal.onrender.com',
         changeOrigin: true,
       },
       '/dashboard/region': {
-        target: 'http://localhost:8000',
+        target: 'https://ps-crm-saarthi-public-grievance-portal.onrender.com',
         changeOrigin: true,
       },
       '/dashboard/admin': {
-        target: 'http://localhost:8000',
+        target: 'https://ps-crm-saarthi-public-grievance-portal.onrender.com',
         changeOrigin: true,
       },
       '/dashboard/ministry': {
-        target: 'http://localhost:8000',
+        target: 'https://ps-crm-saarthi-public-grievance-portal.onrender.com',
         changeOrigin: true,
       },
       '/analytics': {
-        target: 'http://localhost:8000',
+        target: 'https://ps-crm-saarthi-public-grievance-portal.onrender.com',
         changeOrigin: true,
       },
       '/complaints': {
-        target: 'http://localhost:8000',
+        target: 'https://ps-crm-saarthi-public-grievance-portal.onrender.com',
         changeOrigin: true,
       },
       '/uploads': {
-        target: 'http://localhost:8000',
+        target: 'https://ps-crm-saarthi-public-grievance-portal.onrender.com',
         changeOrigin: true,
       },
       '/departments': {
-        target: 'http://localhost:8000',
+        target: 'https://ps-crm-saarthi-public-grievance-portal.onrender.com',
         changeOrigin: true,
       },
       '/officers': {
-        target: 'http://localhost:8000',
+        target: 'https://ps-crm-saarthi-public-grievance-portal.onrender.com',
         changeOrigin: true,
       },
       '/officer': {
-        target: 'http://localhost:8000',
+        target: 'https://ps-crm-saarthi-public-grievance-portal.onrender.com',
         changeOrigin: true,
       },
       '/notifications': {
-        target: 'http://localhost:8000',
+        target: 'https://ps-crm-saarthi-public-grievance-portal.onrender.com',
         changeOrigin: true,
       },
     }

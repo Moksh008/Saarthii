@@ -18,7 +18,7 @@ import {
 import { useAuth } from "@/context/AuthContext";
 import { motion } from "framer-motion";
 
-const SAARTHII_LOGO_SRC = "/Red_Modern_Lettering_Creative_Studio_Logo-removebg-preview.png";
+const SAARTHII_LOGO_SRC = "/saarthii_logo.png";
 
 export function DashboardSidebar() {
   const { user, logout } = useAuth();

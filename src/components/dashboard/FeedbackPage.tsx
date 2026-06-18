@@ -11,6 +11,7 @@ interface Complaint {
   status: string;
   priority: string;
   category: string | null;
+  ministry: string | null;
   created_at: string;
   feedback: { rating: number; comment?: string | null; created_at?: string } | null;
 }
@@ -146,7 +147,7 @@ export function FeedbackPage() {
                       <StatusBadge status={c.status as any} />
                     </div>
                     <p className="text-xs text-slate-400">
-                      {c.category || 'General'} • Filed {new Date(c.created_at).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}
+                      {(c as any).ministry || c.category || 'Unclassified'} • Filed {new Date(c.created_at).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}
                     </p>
 
                     {/* Feedback display */}
@@ -306,7 +307,7 @@ export function FeedbackPage() {
                       <StatusBadge status={c.status as any} />
                     </div>
                     <p className="text-xs text-slate-400">
-                      {c.category || 'General'} • Filed {new Date(c.created_at).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}
+                      {(c as any).ministry || c.category || 'Unclassified'} • Filed {new Date(c.created_at).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}
                     </p>
                   </div>
                   <button

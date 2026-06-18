@@ -9,10 +9,7 @@ export function Footer() {
           
           <div>
             <div className="flex items-center gap-2 mb-6">
-              <div className="bg-primary p-1 rounded-lg text-white">
-                <span translate="no" className="material-symbols-outlined notranslate block">account_balance</span>
-              </div>
-              <span className="text-xl font-bold text-slate-900">Saarthii</span>
+              <img src="/saarthii_logo.png" alt="Saarthii" className="h-9 w-auto" />
             </div>
             <p className="text-slate-500 text-sm leading-relaxed mb-6">
               Pioneering the next generation of government technology to empower leaders and serve communities.

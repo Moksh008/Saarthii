@@ -7,6 +7,7 @@ import { Eye, EyeOff, Phone } from "lucide-react";
 import apiFetch from '@/lib/api'
 import { auth, googleProvider } from '@/lib/firebase'
 import { useAuth } from '@/context/AuthContext'
+import type { AuthError } from 'firebase/auth'
 import type { ConfirmationResult } from 'firebase/auth'
 import { signInWithPopup, RecaptchaVerifier, signInWithPhoneNumber } from 'firebase/auth'
 
@@ -273,6 +274,27 @@ export function LoginPage() {
   
   const from = (location.state as any)?.from?.pathname || null;
 
+  const getFirebaseAuthMessage = (err: unknown) => {
+    const code = (err as AuthError | undefined)?.code;
+    switch (code) {
+      case 'auth/invalid-credential':
+      case 'auth/wrong-password':
+      case 'auth/user-not-found':
+      case 'auth/invalid-login-credentials':
+        return 'Invalid email or password. If this is your first time, please sign up first.';
+      case 'auth/invalid-api-key':
+        return 'Firebase configuration error: invalid API key. Check frontend and backend Firebase config.';
+      case 'auth/network-request-failed':
+        return 'Network error while contacting Firebase. Please check your internet connection and retry.';
+      case 'auth/operation-not-allowed':
+        return 'Email/password sign-in is disabled in Firebase Authentication settings.';
+      case 'auth/too-many-requests':
+        return 'Too many login attempts. Please wait a moment and try again.';
+      default:
+        return null;
+    }
+  };
+
   const handleRedirect = (role: string) => {
     if (from) {
       navigate(from, { replace: true });
@@ -384,7 +406,7 @@ export function LoginPage() {
         handleRedirect(userData.role);
       }
     } catch (err: any) {
-      setError(err.message || 'Failed to log in. Please check your credentials.');
+      setError(getFirebaseAuthMessage(err) || err.message || 'Failed to log in. Please check your credentials.');
     } finally {
       setIsLoading(false);
     }
@@ -415,7 +437,7 @@ export function LoginPage() {
           } 
         });
       } else {
-        setError(err.message || 'Google login failed.');
+        setError(getFirebaseAuthMessage(err) || err.message || 'Google login failed.');
       }
     }
   };
@@ -424,8 +446,8 @@ export function LoginPage() {
     <div className="min-h-screen grid lg:grid-cols-2 pt-20">
       <div className="relative hidden lg:flex flex-col justify-between bg-gradient-to-br from-primary/90 via-primary to-primary/80 p-12 text-primary-foreground">
         <div className="relative z-20">
-          <div className="flex items-center gap-2 text-2xl font-black tracking-tight">
-            Saarthii
+          <div className="flex items-center gap-2">
+            <img src="/saarthii_logo.png" alt="Saarthii" className="h-10 w-auto" />
           </div>
           <p className="mt-2 text-primary-foreground/80 font-medium">Empowering governance through technology.</p>
         </div>
@@ -529,8 +551,8 @@ export function LoginPage() {
 
       <div className="flex items-center justify-center p-8 bg-background">
         <div className="w-full max-w-[420px]">
-          <div className="lg:hidden flex items-center justify-center gap-2 text-2xl font-black mb-12 text-primary">
-            Saarthii
+          <div className="lg:hidden flex items-center justify-center mb-12">
+            <img src="/saarthii_logo.png" alt="Saarthii" className="h-12 w-auto" />
           </div>
 
           <div className="text-center mb-8">

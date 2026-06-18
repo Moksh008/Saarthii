@@ -200,7 +200,7 @@ export function GrievanceDetail() {
                   <div className="backdrop-blur-md bg-white/15 rounded-lg p-3 border border-white/20">
                     <p className="text-[10px] font-semibold text-white/60 uppercase tracking-wider mb-1">Category</p>
                     <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-white/20 text-white">
-                      {complaint.category || 'General'}
+                      {complaint.ministry || complaint.category || 'Unclassified'}
                     </span>
                   </div>
                   <div className="backdrop-blur-md bg-white/15 rounded-lg p-3 border border-white/20">
@@ -289,7 +289,7 @@ export function GrievanceDetail() {
         {/* Right Column - AI Insights */}
         <div className="space-y-6">
           <AIInsightPanel 
-            category={complaint.category || 'General'}
+            category={complaint.ministry || complaint.category || 'Unclassified'}
             priority={displayPriority}
             confidence={complaint.sentiment_score ? Math.round(complaint.sentiment_score * 100) : 85}
             sla={complaint.sla_deadline ? new Date(complaint.sla_deadline).toLocaleDateString() : 'N/A'}

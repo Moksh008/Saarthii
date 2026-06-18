@@ -20,7 +20,7 @@ export function MyGrievances() {
         const formatted = data.map((item: any) => ({
           id: item._id,
           title: item.title,
-          category: item.category || 'General',
+          category: item.ministry || item.category || 'Unclassified',
           location: item.location?.address || 'Not specified',
           date: new Date(item.created_at).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }),
           status: item.status.charAt(0).toUpperCase() + item.status.slice(1).replace('_', ' '),

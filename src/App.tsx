@@ -1,3 +1,4 @@
+// QR Tracking route added
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { Navbar } from './components/common/Navbar';
 import { ProtectedRoute } from './components/common/ProtectedRoute';
@@ -28,6 +29,7 @@ const MinistryOverview = React.lazy(() => import('./components/dashboard/Ministr
 const McOverview = React.lazy(() => import('./components/dashboard/McOverview').then(m => ({ default: m.McOverview })))
 const MlaMPOverview = React.lazy(() => import('./components/dashboard/MlaMPOverview').then(m => ({ default: m.MlaMPOverview })))
 const AdminDashboard = React.lazy(() => import('./pages/AdminDashboard').then(m => ({ default: m.AdminDashboard })))
+const TrackGrievance = React.lazy(() => import('./pages/TrackGrievance').then(m => ({ default: m.TrackGrievance })))
 
 function GovDashboardIndex() {
   const { user } = useAuth();
@@ -46,16 +48,18 @@ function AppContent() {
   const isDashboard = location.pathname.startsWith('/dashboard') || 
                       location.pathname.startsWith('/gov-dashboard') ||
                       location.pathname.startsWith('/admin-dashboard');
+  const isTrackingPage = location.pathname.startsWith('/track/');
 
   return (
     <div className="min-h-screen">
-      {!isDashboard && <Navbar />}
+      {!isDashboard && !isTrackingPage && <Navbar />}
       <main>
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<AboutUs />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<SignupPage />} />
+          <Route path="/track/:id" element={<Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="w-10 h-10 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin" /></div>}><TrackGrievance /></Suspense>} />
           
           {/* Citizen Dashboard Routes */}
           <Route path="/dashboard" element={<ProtectedRoute allowedRoles={['citizen']}><Dashboard /></ProtectedRoute>}>
@@ -85,7 +89,7 @@ function AppContent() {
           <Route path="/admin-dashboard" element={<ProtectedRoute allowedRoles={['admin']}><Suspense fallback={<div>Loading Admin Dashboard...</div>}><AdminDashboard /></Suspense></ProtectedRoute>} />
         </Routes>
       </main>
-      {!isDashboard && <Footer />}
+      {!isDashboard && !isTrackingPage && <Footer />}
     </div>
   );
 }

@@ -124,9 +124,7 @@ export function SignupPage() {
     <div className="min-h-screen bg-slate-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8 pt-32">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <div className="flex justify-center flex-col items-center">
-          <div className="bg-primary p-2 rounded text-white flex items-center justify-center mb-4">
-            <span translate="no" className="material-symbols-outlined notranslate text-3xl">how_to_reg</span>
-          </div>
+          <img src="/saarthii_logo.png" alt="Saarthii" className="h-14 w-auto mb-4" />
           <h2 className="mt-2 text-center text-3xl font-black text-slate-900 tracking-tight">
             Create a Citizen Account
           </h2>

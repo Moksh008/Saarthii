@@ -137,7 +137,7 @@ export function MinistryOverview() {
     );
   }
 
-  const activeComplaints = data.status_breakdown.assigned + data.status_breakdown.in_progress;
+  const activeComplaints = (data.status_breakdown?.assigned || 0) + (data.status_breakdown?.in_progress || 0);
 
   return (
     <ErrorBoundary>
@@ -167,25 +167,25 @@ export function MinistryOverview() {
         {[
           {
             label: "Total Complaints",
-            value: data.total_complaints.toLocaleString(),
+            value: data.total_complaints?.toLocaleString() || "0",
             icon: <Activity className="text-blue-600" />,
             bg: "bg-blue-50",
           },
           {
             label: "Resolution Rate",
-            value: `${data.resolution_rate}%`,
+            value: `${data.resolution_rate ?? 0}%`,
             icon: <BarChart className="text-emerald-600" />,
             bg: "bg-emerald-50",
           },
           {
             label: "Active (In-Progress)",
-            value: activeComplaints.toLocaleString(),
+            value: activeComplaints?.toLocaleString() || "0",
             icon: <Clock className="text-amber-600" />,
             bg: "bg-amber-50",
           },
           {
             label: "Critical Alerts",
-            value: data.priority_breakdown.critical.toLocaleString(),
+            value: data.priority_breakdown?.critical?.toLocaleString() || "0",
             icon: <AlertTriangle className="text-rose-600" />,
             bg: "bg-rose-50",
           },
@@ -213,7 +213,7 @@ export function MinistryOverview() {
             </h3>
           </div>
           <div className="space-y-6">
-            {data.department_performance.length > 0 ? data.department_performance.map((item, i) => (
+            {data.department_performance && data.department_performance.length > 0 ? data.department_performance.map((item, i) => (
               <div key={i}>
                 <div className="flex justify-between items-center mb-2">
                   <span className="text-xs font-bold text-slate-700">{item.dept}</span>
@@ -240,7 +240,7 @@ export function MinistryOverview() {
               Regional Breakdown
             </h3>
             <div className="space-y-4">
-              {data.by_city.map((r, i) => (
+              {(data.by_city || []).map((r, i) => (
                 <div key={i} className="flex justify-between items-center p-3 rounded-xl bg-white/5 border border-white/10">
                   <div>
                     <p className="text-xs text-slate-400 font-medium uppercase tracking-widest">{r.city}</p>
@@ -270,7 +270,7 @@ export function MinistryOverview() {
             </div>
           </div>
           <div className="space-y-3">
-            {data.crisis_alerts.length > 0 ? data.crisis_alerts.map((alert) => (
+            {data.crisis_alerts && data.crisis_alerts.length > 0 ? data.crisis_alerts.map((alert) => (
               <div key={alert._id} className="p-4 bg-white border border-rose-200 rounded-xl flex justify-between items-center shadow-sm">
                 <div className="flex-1 pr-4">
                   <p className="text-sm font-bold text-slate-900 line-clamp-1">{alert.title}</p>
@@ -302,9 +302,9 @@ export function MinistryOverview() {
              <div>
                <p className="text-xs font-bold text-slate-400 mb-3 uppercase tracking-wider">By Priority</p>
                <div className="grid grid-cols-4 gap-2">
-                  {Object.entries(data.priority_breakdown).map(([priority, count], i) => (
+                  {Object.entries(data.priority_breakdown || {}).map(([priority, count], i) => (
                     <div key={i} className="bg-slate-50 p-3 rounded-lg border border-slate-100 text-center">
-                      <div className="text-lg font-black text-slate-800">{count}</div>
+                      <div className="text-lg font-black text-slate-800">{Number(count)}</div>
                       <div className="text-[10px] font-bold text-slate-500 uppercase mt-1">{priority}</div>
                     </div>
                   ))}
@@ -315,20 +315,20 @@ export function MinistryOverview() {
              <div>
                <p className="text-xs font-bold text-slate-400 mb-3 uppercase tracking-wider">Workflow Funnel</p>
                <div className="flex w-full h-3 rounded-full overflow-hidden mb-2">
-                 {Object.entries(data.status_breakdown).map(([status, count]) => {
-                   if (count === 0) return null;
+                 {Object.entries(data.status_breakdown || {}).map(([status, count]) => {
+                   if (!count) return null;
                    return (
                      <div 
                        key={status} 
                        className={`${STATUS_COLORS[status] || "bg-slate-400"} h-full`} 
-                       style={{ width: `${(count / data.total_complaints) * 100}%` }}
+                       style={{ width: `${(Number(count) / (data.total_complaints || 1)) * 100}%` }}
                        title={`${status}: ${count}`}
                      />
                    );
                  })}
                </div>
                <div className="flex flex-wrap gap-3">
-                 {Object.entries(data.status_breakdown).filter(([_, c]) => c > 0).map(([status, count]) => (
+                 {Object.entries(data.status_breakdown || {}).filter(([_, c]) => Number(c) > 0).map(([status, count]) => (
                    <div key={status} className="flex items-center gap-1.5">
                      <div className={`size-2.5 rounded-sm ${STATUS_COLORS[status] || "bg-slate-400"}`} />
                      <span className="text-[10px] font-bold text-slate-600 uppercase">{status.replace("_", "")} ({count})</span>
@@ -349,7 +349,7 @@ export function MinistryOverview() {
             Top Complaint Categories
           </h4>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {data.top_categories.map((c, i) => {
+            {(data.top_categories || []).map((c, i) => {
               const pct = data.total_complaints ? Math.round((c.count / data.total_complaints) * 100) : 0;
               return (
                 <div key={i} className="p-4 rounded-xl border border-slate-100 hover:border-slate-200 transition-all flex flex-col justify-between h-24">
@@ -373,7 +373,7 @@ export function MinistryOverview() {
             </h4>
           </div>
           <div className="space-y-3">
-            {data.recent_complaints.map((c) => (
+            {(data.recent_complaints || []).map((c) => (
               <div key={c._id} className="p-3 bg-slate-50 border border-slate-100 rounded-xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-bold text-slate-900 truncate">{c.title}</p>
